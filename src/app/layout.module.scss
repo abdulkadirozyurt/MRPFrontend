@@ -1,0 +1,40 @@
+/* layout.module.scss */
+
+.mainContainer {
+  @apply flex flex-col min-h-screen;
+}
+
+/* Header Stilleri */
+.header {
+  @apply w-full py-4 bg-blue-600 ;
+}
+
+.navbar {
+  @apply flex justify-between items-center max-w-7xl mx-auto px-4;
+}
+
+.navbarTitle {
+  @apply text-3xl font-bold text-white;
+}
+
+.navbarLink {
+  @apply bg-white text-blue-600 mx-1 px-4 py-2 rounded hover:bg-gray-200 transition;
+}
+
+/* Ana İçerik Stilleri */
+.mainContent {
+  @apply flex-grow flex flex-col p-8 w-full items-center justify-center;
+}
+
+.mainTitle {
+  @apply text-4xl font-bold mb-4;
+}
+
+.mainText {
+  @apply text-xl mb-8 text-center;
+}
+
+/* Footer Stilleri */
+.footer {
+  @apply w-full py-4 bg-gray-800 text-white text-center;
+}
