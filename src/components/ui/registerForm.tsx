@@ -14,13 +14,7 @@ export default function RegisterForm() {
   const authError = useSelector((state: RootState) => state.auth.error);
   const isRegistered = useSelector((state: RootState) => state.auth.isRegistered);
 
-  useEffect(() => {
-    if (isRegistered) {
-      // Kayıt işlemi tamamlandığında onay mesajını gösterelim
-      // alert("Kayıt işlemi başarılı! Giriş yapmak için buraya tıklayın.");
-      // dispatch(resetRegistrationState());
-    }
-  }, [isRegistered, dispatch]);
+  
 
   const onFinish = (values: any) => {
     console.log("Alınan değerler:", values);
@@ -35,11 +29,11 @@ export default function RegisterForm() {
   };
 
   return (
-    <>
+    <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-md">
       {isRegistered ? (
         <DoneRegister />
       ) : (
-        <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-md">
+        <div >
           <h2 className="text-2xl font-bold text-center mb-6">Kayıt Ol</h2>
           <Form name="registerForm" layout="vertical" onFinish={onFinish}>
             <Form.Item
@@ -118,6 +112,6 @@ export default function RegisterForm() {
           </Form>
         </div>
       )}
-    </>
+    </div>
   );
 }
