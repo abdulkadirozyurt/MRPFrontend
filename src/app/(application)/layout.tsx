@@ -1,12 +1,12 @@
 "use client";
 
-import "./global.scss";
+// import "./global.scss";
 import { Provider } from "react-redux";
 import styles from "./layout.module.scss";
 import Navbar from "@/components/ui/navbar";
 import store from "@/utilities/redux/store";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
 import Topbar from "@/components/ui/topbar";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 export default function RootLayout({
   children,

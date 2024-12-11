@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { Button, Checkbox, Form, Input } from "antd";
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { login } from "@/utilities/redux/slices/authSlice";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { LockOutlined, MailOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Form, Input } from "antd";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -14,12 +15,19 @@ export default function LoginForm() {
   const dispatch: AppDispatch = useDispatch();
   const authStatus = useSelector((state: RootState) => state.auth.status);
   const authError = useSelector((state: RootState) => state.auth.error);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const router = useRouter();
+  // const { login: contextLogin } = useAuth();
 
   const onFinish = (values: any) => {
-    console.log("Success:", values);
-
     dispatch(login({ email: values.email, password: values.password }));
   };
+
+  useEffect(() => {
+    if (authStatus === "succeeded" && isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [authStatus, isAuthenticated]);
 
   return (
     <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-md">
@@ -62,7 +70,12 @@ export default function LoginForm() {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full" disabled={authStatus==="loading"}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="w-full"
+            disabled={authStatus === "loading"}
+          >
             Giriş yap
           </Button>
         </Form.Item>

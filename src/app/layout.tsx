@@ -22,32 +22,34 @@ export default function RootLayout({
       <body className="min-h-screen">
         <Provider store={store}>
           <AntdRegistry>
-            <div className={styles.mainContainer}>
-              {/* Header */}
-              <header className={styles.header}>
-                <nav className={styles.navbar}>
-                  <h1 className={styles.navbarTitle}>
-                    <Link href="/">flowMRP</Link>
-                  </h1>
-                  <div className="space-x-4">
-                    <Link className={styles.navbarLink} href="/auth/login">
-                      Giriş Yap
-                    </Link>
-                    <Link className={styles.navbarLink} href="/auth/register">
-                      Kaydol
-                    </Link>
-                  </div>
-                </nav>
-              </header>
+            
+              <div className={styles.mainContainer}>
+                {/* Header */}
+                <header className={styles.header}>
+                  <nav className={styles.navbar}>
+                    <h1 className={styles.navbarTitle}>
+                      <Link href="/">flowMRP</Link>
+                    </h1>
+                    <div className="space-x-4">
+                      <Link className={styles.navbarLink} href="/auth/login">
+                        Giriş Yap
+                      </Link>
+                      <Link className={styles.navbarLink} href="/auth/register">
+                        Kaydol
+                      </Link>
+                    </div>
+                  </nav>
+                </header>
 
-              {/* Ana İçerik */}
-              <div className={styles.mainContent}>{children}</div>
+                {/* Ana İçerik */}
+                <div className={styles.mainContent}>{children}</div>
 
-              {/* Footer */}
-              <footer className={styles.footer}>
-                <p>&copy; 2024 flowMRP. All rights reserved.</p>
-              </footer>
-            </div>
+                {/* Footer */}
+                <footer className={styles.footer}>
+                  <p>&copy; 2024 flowMRP. All rights reserved.</p>
+                </footer>
+              </div>
+            
           </AntdRegistry>
         </Provider>
       </body>

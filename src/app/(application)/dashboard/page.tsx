@@ -1,5 +1,6 @@
 "use client";
 
+import ProtectedRoute from "@/components/ProtectedRoute";
 import React, { useEffect, useState } from "react";
 
 export default function () {
@@ -12,8 +13,10 @@ export default function () {
     //   .then((data) => setData(data));
   }, []);
   return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
+    <ProtectedRoute>
+      <div>
+        <h1>Dashboard</h1>
+      </div>
+    </ProtectedRoute>
   );
 }

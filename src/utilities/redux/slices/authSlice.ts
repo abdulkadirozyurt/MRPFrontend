@@ -8,6 +8,7 @@ const initialState: AuthState = {
   status: "idle",
   error: null,
   isRegistered: false,
+  isAuthenticated: !!localStorage.getItem("token"),
 };
 
 export const register = createAsyncThunk(
@@ -37,8 +38,14 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    loginSuccess(state, action) {
+      state.token = action.payload;
+      state.isAuthenticated = true;
+      localStorage.setItem("token", action.payload);
+    },
     logout(state) {
       state.token = null;
+      state.isAuthenticated = false;
       localStorage.removeItem("token");
     },
     resetRegistrationState(state) {
@@ -67,6 +74,7 @@ export const authSlice = createSlice({
         state.status = "succeeded";
         state.token = action.payload;
         localStorage.setItem("token", action.payload);
+        state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
@@ -75,5 +83,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout, resetRegistrationState } = authSlice.actions;
+export const { loginSuccess, logout, resetRegistrationState } = authSlice.actions;
 export default authSlice;
