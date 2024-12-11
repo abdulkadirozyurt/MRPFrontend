@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function Materials() {
   const [materials, setMaterials] = useState([]);
@@ -17,15 +18,17 @@ export default function Materials() {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Malzemeler</h1>
-      <ul className="space-y-2">
-        {materials.map((material) => (
-          <li key={material.id} className="p-4 bg-white shadow rounded">
-            {material.name}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ProtectedRoute>
+      <div className="min-h-screen">
+        <h1 className="text-2xl font-bold mb-4">Malzemeler</h1>
+        <ul className="space-y-2">
+          {materials.map((material) => (
+            <li key={material.id} className="p-4 bg-white shadow rounded">
+              {material.name}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </ProtectedRoute>
   );
 }
