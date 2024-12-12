@@ -18,7 +18,7 @@ export default function Materials() {
   }, []);
 
   return (
-    <ProtectedRoute>
+    
       <div className="min-h-screen">
         <h1 className="text-2xl font-bold mb-4">Malzemeler</h1>
         <ul className="space-y-2">
@@ -29,6 +29,6 @@ export default function Materials() {
           ))}
         </ul>
       </div>
-    </ProtectedRoute>
+    
   );
 }

@@ -31,10 +31,10 @@ export default function RootLayout({
                       <Link href="/">flowMRP</Link>
                     </h1>
                     <div className="space-x-4">
-                      <Link className={styles.navbarLink} href="/auth/login">
+                      <Link className={styles.navbarLink} href="/login">
                         Giriş Yap
                       </Link>
-                      <Link className={styles.navbarLink} href="/auth/register">
+                      <Link className={styles.navbarLink} href="/register">
                         Kaydol
                       </Link>
                     </div>

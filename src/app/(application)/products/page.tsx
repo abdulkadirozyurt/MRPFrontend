@@ -5,7 +5,7 @@ import ProductList from "@/components/ui/productList";
 
 export default function Products() {
   return (
-    <ProtectedRoute>
+    
       <div className="min-h-screen ">
         {/* <h1 className="text-2xl font-bold mb-4">Ürünler</h1>
     <ul className="space-y-2">
@@ -21,6 +21,6 @@ export default function Products() {
 
         <ProductList />
       </div>
-    </ProtectedRoute>
+    
   );
 }

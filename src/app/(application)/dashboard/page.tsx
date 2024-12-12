@@ -13,11 +13,11 @@ export default function () {
     //   .then((data) => setData(data));
   }, []);
   return (
-    <ProtectedRoute>
+    
       <div>
         <h1>Dashboard</h1>
       </div>
-    </ProtectedRoute>
+    
   );
 }
 

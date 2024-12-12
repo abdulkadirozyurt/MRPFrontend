@@ -7,6 +7,7 @@ import Navbar from "@/components/ui/navbar";
 import store from "@/utilities/redux/store";
 import Topbar from "@/components/ui/topbar";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function RootLayout({
   children,
@@ -23,11 +24,15 @@ export default function RootLayout({
       <body className={`antialiased`}>
         <Provider store={store}>
           <AntdRegistry>
+
+            <ProtectedRoute>
             <div className={styles.container}>
               <Topbar />
               <Navbar />
               <div className={styles.content}>{children}a</div>
             </div>
+            </ProtectedRoute>
+            
           </AntdRegistry>
         </Provider>
       </body>
