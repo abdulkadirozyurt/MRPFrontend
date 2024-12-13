@@ -1,4 +1,4 @@
-import LoginForm from "@/components/ui/loginForm";
+import LoginForm from "@/components/ui/auth-components/loginForm";
 import React from "react";
 
 export default function Login() {

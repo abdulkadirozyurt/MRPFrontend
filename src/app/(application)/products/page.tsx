@@ -1,7 +1,7 @@
 "use client";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
-import ProductList from "@/components/ui/productList";
+import ProductList from "@/components/ui/product-components/productList";
 
 export default function Products() {
   return (

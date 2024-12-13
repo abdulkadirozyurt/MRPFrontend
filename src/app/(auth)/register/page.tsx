@@ -1,11 +1,11 @@
 "use client";
 
-import RegiterForm from "@/components/ui/registerForm";
+import RegisterForm from "@/components/ui/auth-components/registerForm";
 
 export default function Register() {
   return (
     <div className="flex w-full items-center justify-center">
-      <RegiterForm />
+      <RegisterForm />
     </div>
   );
 }
