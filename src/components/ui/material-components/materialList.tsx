@@ -1,14 +1,11 @@
 "use client";
-import axios from "axios";
-import { Input, Table, Tag } from "antd";
-import { useEffect, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import { IProduct } from "@/models/product/IProduct";
-import { IBillOfMaterial } from "@/models/bom/IBillOfMaterial";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
+import IMaterial from "@/models/material/IMaterial";
 import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
-import { IMaterial } from "@/models/material/IMaterial";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { SearchOutlined } from "@ant-design/icons";
+import { Input, Table } from "antd";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function MaterialList() {
   const materials:IMaterial[] = useSelector((state: RootState) => state.material.materials);

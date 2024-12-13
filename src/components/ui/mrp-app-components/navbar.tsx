@@ -17,7 +17,7 @@ const items: MenuItem[] = [
   {
     key: "dashboard",
     icon:<DashboardOutlined />,
-    label: <Link href="/dashboard">Dashboard</Link>,
+    label: <Link href="/app/dashboard">Dashboard</Link>,
   },
   {
     label: "Envanter",
@@ -26,11 +26,11 @@ const items: MenuItem[] = [
     children: [
       {
         key: "products",
-        label: <Link href="/products">Ürünler</Link>,
+        label: <Link href="/app/products">Ürünler</Link>,
       },
       {
         key: "materials",
-        label: <Link href="/materials">Malzemeler</Link>,
+        label: <Link href="/app/materials">Malzemeler</Link>,
       },
 
       // {

@@ -1,17 +1,21 @@
 "use client";
-
 import "./global.scss";
-import Link from "next/link";
 import { Provider } from "react-redux";
-import styles from "./layout.module.scss";
 import store from "@/utilities/redux/store";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import Footer from "@/components/landing-layout-components/Footer";
+import Header from "@/components/landing-layout-components/Header";
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isMrpRoute = pathname.includes("/app");
+  console.log("isApplicationRoute", isMrpRoute);
+
   return (
     <html lang="en">
       <head>
@@ -20,38 +24,25 @@ export default function RootLayout({
         <title>flowMRP</title>
       </head>
       <body className="min-h-screen">
-        <Provider store={store}>
-          <AntdRegistry>
-            
-              <div className={styles.mainContainer}>
-                {/* Header */}
-                <header className={styles.header}>
-                  <nav className={styles.navbar}>
-                    <h1 className={styles.navbarTitle}>
-                      <Link href="/">flowMRP</Link>
-                    </h1>
-                    <div className="space-x-4">
-                      <Link className={styles.navbarLink} href="/login">
-                        Giriş Yap
-                      </Link>
-                      <Link className={styles.navbarLink} href="/register">
-                        Kaydol
-                      </Link>
-                    </div>
-                  </nav>
-                </header>
+        {isMrpRoute ? (
+          <Provider store={store}>
+            <AntdRegistry>{children}</AntdRegistry>
+          </Provider>
+        ) : (
+          <Provider store={store}>
+            <AntdRegistry>
+              <div className="flex flex-col min-h-screen">
+                <Header />
 
-                {/* Ana İçerik */}
-                <div className={styles.mainContent}>{children}</div>
+                <div className="flex-grow flex flex-col p-8 w-full items-center justify-center">
+                  {children}
+                </div>
 
-                {/* Footer */}
-                <footer className={styles.footer}>
-                  <p>&copy; 2024 flowMRP. All rights reserved.</p>
-                </footer>
+                <Footer />
               </div>
-            
-          </AntdRegistry>
-        </Provider>
+            </AntdRegistry>
+          </Provider>
+        )}
       </body>
     </html>
   );

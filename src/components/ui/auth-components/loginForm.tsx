@@ -25,7 +25,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (authStatus === "succeeded" && isAuthenticated) {
-      router.push("/dashboard");
+      router.push("/app/dashboard");
     }
   }, [authStatus, isAuthenticated]);
 
@@ -82,7 +82,7 @@ export default function LoginForm() {
       </Form>
       <div className="text-center mt-4">
         Hesabınız yok mu?{" "}
-        <a href="/auth/register" className="text-blue-500 hover:text-blue-700">
+        <a href="/register" className="text-blue-500 hover:text-blue-700">
           Şimdi kaydolun!
         </a>
       </div>
