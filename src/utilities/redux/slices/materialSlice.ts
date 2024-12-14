@@ -1,5 +1,7 @@
+import { message } from "antd";
+import IMaterial from "@/models/material/IMaterial";
 import MaterialState from "@/utilities/types/materialTypes";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState: MaterialState = {
@@ -13,12 +15,33 @@ export const fetchMaterials = createAsyncThunk("material/fetchMaterials", async 
   return response.data.materials;
 });
 
+export const addMaterial = createAsyncThunk(
+  "material/addMaterial",
+  async (newMaterial: IMaterial, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/materials`,
+        newMaterial
+      );
+      return response.data.material;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.message || "material add failed");
+    }
+  }
+);
+
 const materialSlice = createSlice({
   name: "material",
   initialState,
-  reducers: {},
+  reducers: {
+    resetError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
+
+      // fetchMaterials
       .addCase(fetchMaterials.pending, (state) => {
         state.status = "loading";
       })
@@ -29,6 +52,19 @@ const materialSlice = createSlice({
       .addCase(fetchMaterials.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "failed to fetch materials";
+      })
+
+      // add material
+      .addCase(addMaterial.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(addMaterial.fulfilled, (state, action: PayloadAction<IMaterial>) => {
+        state.status = "succeeded";
+        state.materials.push(action.payload);
+      })
+      .addCase(addMaterial.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = (action.payload as string) || "failed to add material";
       });
   },
 });

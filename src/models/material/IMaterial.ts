@@ -1,7 +1,7 @@
 import ISupplier from "../supplier/ISupplier";
 
 export default interface IMaterial {
-  id: string;
+  _id: string;
   name: string;
   stockAmount: number;
   unitType: string;
@@ -10,3 +10,4 @@ export default interface IMaterial {
   priceHistory: Array<{ price: number; date: Date }>;
   suppliers: Array<ISupplier>;
 }
+

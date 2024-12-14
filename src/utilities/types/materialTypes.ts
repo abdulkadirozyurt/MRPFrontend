@@ -1,4 +1,4 @@
-import { IMaterial } from "@/models/material/IMaterial";
+import IMaterial from "@/models/material/IMaterial";
 
 export default interface MaterialState {
   materials: IMaterial[];

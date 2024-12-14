@@ -53,7 +53,7 @@ export default function ApplicationLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`antialiased w-full`}>
+    <div className={`flex flex-col antialiased w-full h-screen`}>
       {/* <Provider store={store}>
         <AntdRegistry>
          
@@ -62,7 +62,7 @@ export default function ApplicationLayout({
       <ProtectedRoute>
         <Topbar />
         <Navbar />
-        <div className="w-full h-screen p-8 transition-all duration-300 ease-in-out bg-gray-100">
+        <div className="w-full h-full p-4 transition-all duration-300 ease-in-out bg-gray-100">
           {children}
         </div>
       </ProtectedRoute>

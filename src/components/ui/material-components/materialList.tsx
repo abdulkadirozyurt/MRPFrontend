@@ -1,89 +1,140 @@
 "use client";
-import IMaterial from "@/models/material/IMaterial";
-import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { SearchOutlined } from "@ant-design/icons";
-import { Input, Table } from "antd";
 import { useEffect, useState } from "react";
+import AddMaterialForm from "./AddMaterialForm";
+import { SearchOutlined } from "@ant-design/icons";
+import IMaterial from "@/models/material/IMaterial";
 import { useDispatch, useSelector } from "react-redux";
+import { Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
 
 export default function MaterialList() {
-  const materials:IMaterial[] = useSelector((state: RootState) => state.material.materials);
   const dispatch: AppDispatch = useDispatch();
+  const status = useSelector((state: RootState) => state.material.status);
+  const materials: IMaterial[] = useSelector((state: RootState) => state.material.materials);
+  const loading = status === "loading";
 
+  const [searchText, setSearchText] = useState<string>("");
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  //   const [products, setProducts] = useState<IProduct[]>([]);
-    const [searhText, setSearchText] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(false);
-
-  const filteredMaterials = materials.filter((material) =>
-    material.name.toLowerCase().includes(searhText.toLowerCase())
+  const filteredMaterials = materials.filter(
+    (material) =>
+      material && material.name && material.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      sorter: function (a: IMaterial, b: IMaterial) {
-        return a.name.localeCompare(b.name);
-      },
-    },
-    // {
-    //   title: "Description",
-    //   dataIndex: "description",
-    //   key: "description",
-    // },
-    // {
-    //   title: "Materials",
-    //   dataIndex: "billOfMaterials",
-    //   key: "billOfMaterials",
-    //   render: (billOfMaterials: IBillOfMaterial[]) => (
-    //     <>
-    //       {billOfMaterials &&
-    //         billOfMaterials.map((bom) => <Tag key={bom.material.id}>{bom.material.name}</Tag>)}
-    //     </>
-    //   ),
-    // },
-  ];
+  const handleShowModal = () => {
+    setIsModalVisible(true);
+  };
 
-//   const fetchProducts = async () => {
-//     try {
-//       setLoading(true);
-//       const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
-//       setProducts(data.products);
-//     } catch (error: any) {
-//       console.error(error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    dispatch(fetchMaterials());
+  };
+
   const handleSearch = (e: any) => {
     setSearchText(e.target.value);
   };
 
-  useEffect(() => {
-    // fetchProducts();
-    dispatch(fetchMaterials());
+  const handleEdit = (record: IMaterial) => {
+    console.log("Düzenlenecek Malzeme:", record);
+  };
 
-  }, []);
+  const handleDelete = (id: string) => {
+    console.log("Silinecek Malzeme ID:", id);
+  };
+
+  const columns: TableColumnsType<IMaterial> = [
+    {
+      title: "Malzeme Adı",
+      dataIndex: "name",
+      key: "name",
+      align: "center",
+      sorter: function (a: IMaterial, b: IMaterial) {
+        return a.name.localeCompare(b.name);
+      },
+    },
+    {
+      title: "Stok Miktarı",
+      dataIndex: "stockAmount",
+      key: "stockAmount",
+      align: "center",
+    },
+    {
+      title: "Birim",
+      dataIndex: "unitType",
+      key: "unitType",
+      align: "center",
+    },
+    {
+      title: "Fiyat",
+      dataIndex: "price",
+      key: "price",
+      align: "center",
+
+      // render: (price:number) =>`${price.toFixed(2)} ₺`
+      render: (price: number | undefined) =>
+        typeof price === "number" ? `${price.toFixed(2)} ₺` : "Belirtilmedi",
+    },
+    {
+      title: "Yeniden Sipariş Seviyesi",
+      dataIndex: "reorderLevel",
+      key: "reorderLevel",
+      align: "center",
+    },
+    {
+      title: "İşlemler",
+      key: "actions",
+      align: "center",
+
+      render: (_: any, record: IMaterial) => (
+        <Space size="middle">
+          <Button type="link" onClick={() => handleEdit(record)}>
+            Düzenle
+          </Button>
+          <Button type="link" danger onClick={() => handleDelete(record._id)}>
+            Sil
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    dispatch(fetchMaterials());
+  }, [dispatch]);
 
   return (
-    <div>
-      <Input
-        className="!mb-5 !w-72"
-        value={searhText}
-        onChange={handleSearch}
-        prefix={<SearchOutlined />}
-        placeholder="Search product"
-      />
+    <>
+      <div className="flex items-center justify-between h-14">
+        <Input
+          className=" !w-72"
+          value={searchText}
+          onChange={handleSearch}
+          prefix={<SearchOutlined />}
+          placeholder="Ara"
+        />
+
+        <Button type="primary" onClick={handleShowModal} className="!m-5">
+          Yeni Malzeme Ekle
+        </Button>
+        <Modal
+          open={isModalVisible}
+          okType="primary"
+          // onCancel={handleModalClose}
+          onCancel={() => setIsModalVisible(false)}
+          footer={null}
+        >
+          <AddMaterialForm onSuccess={handleModalClose} />
+        </Modal>
+      </div>
+
       <Table
-        rowKey="id"
+        rowKey="_id"
         loading={loading}
         columns={columns}
         dataSource={filteredMaterials}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 8 }}
       />
-    </div>
+    </>
   );
 }

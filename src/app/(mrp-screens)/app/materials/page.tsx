@@ -19,10 +19,9 @@ export default function Materials() {
   // }, []);
 
   return (
-    
-      <div className="min-h-screen">
-        <h1 className="text-2xl font-bold mb-4">Malzemeler</h1>
-        {/* <ul className="space-y-2">
+    <>
+      {/* <h3 className="font-bold ">Malzemeler</h3> */}
+      {/* <ul className="space-y-2">
           {materials.map((material) => (
             <li key={material.id} className="p-4 bg-white shadow rounded">
               {material.name}
@@ -30,8 +29,7 @@ export default function Materials() {
           ))}
         </ul> */}
 
-        <MaterialList />
-      </div>
-    
+      <MaterialList />
+    </>
   );
 }
