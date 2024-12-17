@@ -31,7 +31,7 @@ export default function RootLayout({
         ) : (
           <Provider store={store}>
             <AntdRegistry>
-              <div className="flex flex-col">
+              <div className="flex flex-col h-screen">
                 <Header />
 
                 <div className="flex-grow flex flex-col p-8 w-full items-center justify-center">

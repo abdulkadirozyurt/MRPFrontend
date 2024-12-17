@@ -22,7 +22,7 @@ export default function MaterialList() {
       material && material.name && material.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const handleShowModal = () => {
+  const showModal = () => {
     setIsModalVisible(true);
   };
 
@@ -114,13 +114,12 @@ export default function MaterialList() {
           placeholder="Ara"
         />
 
-        <Button type="primary" onClick={handleShowModal} className="!m-5">
+        <Button type="primary" onClick={showModal} className="!m-5">
           Yeni Malzeme Ekle
         </Button>
         <Modal
           open={isModalVisible}
           okType="primary"
-          // onCancel={handleModalClose}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
         >
