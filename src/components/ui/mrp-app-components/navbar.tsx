@@ -32,6 +32,7 @@ const items: MenuItem[] = [
         key: "materials",
         label: <Link href="/app/materials">Malzemeler</Link>,
       },
+      
 
       // {
       //   type: "group",
@@ -50,6 +51,10 @@ const items: MenuItem[] = [
       //   ],
       // },
     ],
+  },
+  {
+    key: "suppliers",
+    label: <Link href="/app/suppliers">Tedarikçiler</Link>,
   },
 
   {

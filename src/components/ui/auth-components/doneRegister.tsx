@@ -9,7 +9,7 @@ export default function DoneRegister() {
 
   const handleNavigateAndRoute = () => {
     dispatch(resetRegistrationState());
-    router.push("/auth/login");
+    router.push("/login");
   };
 
   return (

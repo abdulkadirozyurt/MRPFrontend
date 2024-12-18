@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { addMaterial } from "@/utilities/redux/slices/materialSlice";
 import { FormInstance } from "antd";
+import { ENTRY_TYPES, UNIT_TYPES } from "@/utilities/constants/material";
+import FormItem from "antd/es/form/FormItem";
 
 const { Option } = Select;
 
@@ -35,10 +37,13 @@ export default function AddMaterialForm({ onSuccess }: { onSuccess: () => void }
 
   const onFinish = async (values: any) => {
     try {
-      await dispatch(addMaterial(values)).unwrap(); // Başarılı ekleme
+      await dispatch(addMaterial(values)).unwrap();
+      message.success("Malzeme başarıyla eklendi!");
+      form.resetFields();
       onSuccess(); // Modal kapanır ve liste yenilenir
     } catch (error) {
       console.error("Material eklenirken hata oluştu:", error);
+      message.error("Malzeme eklenirken hata oluştu!");
     }
   };
 
@@ -71,12 +76,23 @@ export default function AddMaterialForm({ onSuccess }: { onSuccess: () => void }
           rules={[{ required: true, message: "Lütfen birim türünü seçiniz!" }]}
         >
           <Select placeholder="Birim türünü seçiniz">
-            <Option value="adet">Adet</Option>
-            <Option value="kg">Kilogram</Option>
-            <Option value="litre">Litre</Option>
-            <Option value="balya">Balya</Option>
+            {UNIT_TYPES.map((type) => (
+              <Option key={type.key}>{type.label}</Option>
+            ))}
           </Select>
         </Form.Item>
+
+        <FormItem
+          name="entryType"
+          label="Giriş Türü"
+          rules={[{ required: true, message: "Lütfen giriş türünü seçiniz!" }]}
+        >
+          <Select placeholder="Giriş türünü seçiniz">
+            {ENTRY_TYPES.map((type) => (
+              <Option key={type.key}>{type.label}</Option>
+            ))}
+          </Select>
+        </FormItem>
 
         <Form.Item
           name="price"
@@ -112,7 +128,6 @@ export default function AddMaterialForm({ onSuccess }: { onSuccess: () => void }
           </Button>
         </Form.Item>
       </Form>
-      {materialError && <p className="text-red-500 mt-4">{materialError}</p>}
     </div>
   );
 }
