@@ -62,6 +62,7 @@ export default function ApplicationLayout({
       <ProtectedRoute>
         <Topbar />
         <Navbar />
+
         <div className="w-full h-full p-4 transition-all duration-300 ease-in-out bg-gray-100">
           {children}
         </div>

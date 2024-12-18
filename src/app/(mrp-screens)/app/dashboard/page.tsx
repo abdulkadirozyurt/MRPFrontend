@@ -1,7 +1,6 @@
 "use client";
 
-import ProtectedRoute from "@/components/ProtectedRoute";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function () {
   const [data, setData] = useState(null);

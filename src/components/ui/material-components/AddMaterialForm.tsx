@@ -1,13 +1,11 @@
 "use client";
 
-import React from "react";
-import { Button, Form, Input, InputNumber, message, Select } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { addMaterial } from "@/utilities/redux/slices/materialSlice";
-import { FormInstance } from "antd";
 import { ENTRY_TYPES, UNIT_TYPES } from "@/utilities/constants/material";
+import { addMaterial, resetAlert } from "@/utilities/redux/slices/materialSlice";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { Button, Form, FormInstance, Input, InputNumber, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import { useDispatch, useSelector } from "react-redux";
 
 const { Option } = Select;
 
@@ -15,42 +13,21 @@ export default function AddMaterialForm({ onSuccess }: { onSuccess: () => void }
   const [form] = Form.useForm<FormInstance>();
   const dispatch: AppDispatch = useDispatch();
   const materialStatus = useSelector((state: RootState) => state.material.status);
-  const materialError = useSelector((state: RootState) => state.material.error);
-
-  // const onFinish = async (values: any) => {
-  //   const result = await dispatch(addMaterial(values))
-  //     .unwrap()
-  //     // .then(() => {
-  //     //   message.success("Malzeme başarıyla eklendi!");
-  //     //   form.resetFields();
-  //     // })
-  //     // .catch((error: any) => {
-  //     //   message.error("Malzeme eklenirken hata oluştu!");
-  //     // });
-
-  //   if (result) {
-  //     console.log("ressssss",result);
-
-  //     onSuccess(); // Başarı olduğunda form kapanır
-  //   }
-  // };
 
   const onFinish = async (values: any) => {
     try {
       await dispatch(addMaterial(values)).unwrap();
-      message.success("Malzeme başarıyla eklendi!");
       form.resetFields();
-      onSuccess(); // Modal kapanır ve liste yenilenir
-    } catch (error) {
-      console.error("Material eklenirken hata oluştu:", error);
-      message.error("Malzeme eklenirken hata oluştu!");
+      onSuccess();
+    } catch (error: any) {
+      console.log("Malzeme ekleme hatası:", error);
     }
   };
 
   return (
     <div>
       <h2 className="text-2xl font-bold text-center mb-6">Yeni Malzeme Ekle</h2>
-      <Form name="addMaterialForm" layout="vertical" onFinish={onFinish}>
+      <Form form={form} name="addMaterialForm" layout="vertical" onFinish={onFinish}>
         <Form.Item
           name="name"
           label="Malzeme Adı"

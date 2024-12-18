@@ -1,21 +1,26 @@
 "use client";
+
+import React from "react";
 import { useEffect, useState } from "react";
 import AddMaterialForm from "./AddMaterialForm";
 import { SearchOutlined } from "@ant-design/icons";
 import IMaterial from "@/models/material/IMaterial";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
+import { Button, ConfigProvider, Input, Modal, Space, Table, TableColumnsType } from "antd";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
+import Message from "@/components/Message";
 
 export default function MaterialList() {
   const dispatch: AppDispatch = useDispatch();
-  const status = useSelector((state: RootState) => state.material.status);
-  const materials: IMaterial[] = useSelector((state: RootState) => state.material.materials);
-  const loading = status === "loading";
-
   const [searchText, setSearchText] = useState<string>("");
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const status = useSelector((state: RootState) => state.material.status);
+  const alertResult = useSelector((state: RootState) => state.material.alertResult);
+  const alertMessage = useSelector((state: RootState) => state.material.alertMessage);
+  const materials: IMaterial[] = useSelector((state: RootState) => state.material.materials);
+
+  const loading = status === "loading";
 
   const filteredMaterials = materials.filter(
     (material) =>
@@ -71,7 +76,6 @@ export default function MaterialList() {
       key: "price",
       align: "center",
 
-      // render: (price:number) =>`${price.toFixed(2)} ₺`
       render: (price: number | undefined) =>
         typeof price === "number" ? `${price.toFixed(2)} ₺` : "Belirtilmedi",
     },
@@ -105,6 +109,8 @@ export default function MaterialList() {
 
   return (
     <>
+      {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
+
       <div className="flex items-center justify-between h-14">
         <Input
           className=" !w-72"
@@ -126,7 +132,6 @@ export default function MaterialList() {
           <AddMaterialForm onSuccess={handleModalClose} />
         </Modal>
       </div>
-
       <Table
         rowKey="_id"
         loading={loading}

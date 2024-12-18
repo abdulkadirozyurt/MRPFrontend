@@ -3,10 +3,19 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import MaterialState from "../types/materialTypes";
 
+const alertMessages = {
+  addMaterialSuccess: "Malzeme başarıyla eklendi.",
+  addMaterialError: "Malzeme eklenirken bir hata oluştu!",
+  fetchMaterialsSuccess: "Malzemeler listelendi.",
+  fetchMaterialsError: "Malzemeler listelenirken hata oluştu!",
+};
+
 const initialState: MaterialState = {
   materials: [],
   status: "idle",
   error: null,
+  alertMessage: "",
+  alertResult: "",
 };
 
 export const fetchMaterials = createAsyncThunk("material/fetchMaterials", async () => {
@@ -36,6 +45,10 @@ const materialSlice = createSlice({
     resetError: (state) => {
       state.error = null;
     },
+    resetAlert: (state) => {
+      state.alertMessage = "";
+      state.alertResult = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -46,10 +59,14 @@ const materialSlice = createSlice({
       })
       .addCase(fetchMaterials.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.alertMessage = alertMessages.fetchMaterialsSuccess;
+        state.alertResult = "info";
         state.materials = action.payload;
       })
       .addCase(fetchMaterials.rejected, (state, action) => {
         state.status = "failed";
+        state.alertMessage = alertMessages.fetchMaterialsError;
+        state.alertResult = "error";
         state.error = action.error.message || "failed to fetch materials";
       })
 
@@ -59,14 +76,28 @@ const materialSlice = createSlice({
       })
       .addCase(addMaterial.fulfilled, (state, action: PayloadAction<IMaterial>) => {
         state.status = "succeeded";
+        state.alertMessage = alertMessages.addMaterialSuccess;
+        state.alertResult = "success";
         state.materials.push(action.payload);
       })
       .addCase(addMaterial.rejected, (state, action) => {
         state.status = "failed";
+        state.alertMessage = alertMessages.addMaterialError;
+        state.alertResult = "error";
         state.error = (action.payload as string) || "failed to add material";
-      });
+      })
+
+      .addMatcher(
+        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+        (state) => {
+          setTimeout(() => {
+            state.alertMessage = "";
+            state.alertResult = "";
+          }, 3000);
+        }
+      );
   },
 });
 
-export const {} = materialSlice.actions;
+export const { resetError, resetAlert } = materialSlice.actions;
 export default materialSlice;
