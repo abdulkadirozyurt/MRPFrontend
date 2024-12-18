@@ -5,3 +5,9 @@ export default interface MaterialState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
+
+
+
+
+
+

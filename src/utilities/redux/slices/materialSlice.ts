@@ -1,8 +1,7 @@
-import { message } from "antd";
 import IMaterial from "@/models/material/IMaterial";
-import MaterialState from "@/utilities/types/materialTypes";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import MaterialState from "../types/materialTypes";
 
 const initialState: MaterialState = {
   materials: [],
