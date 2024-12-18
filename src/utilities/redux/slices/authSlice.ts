@@ -1,15 +1,17 @@
+
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import AuthState from "../types/authTypes";
 
+
 const initialState: AuthState = {
-  // token: localStorage.getItem("token"),
-  token: localStorage.getItem("token") || null,
+  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
   status: "idle",
   error: null,
   isRegistered: false,
-  isAuthenticated: !!localStorage.getItem("token"),
+  isAuthenticated: typeof window !== "undefined" && !!localStorage.getItem("token"),
 };
+
 
 export const register = createAsyncThunk(
   "auth/register",

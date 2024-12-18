@@ -1,3 +1,6 @@
+"use client";
+
+
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { CheckCircleFilled } from "@ant-design/icons";

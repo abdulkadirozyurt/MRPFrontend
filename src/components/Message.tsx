@@ -1,3 +1,6 @@
+"use client";
+
+
 import React, { useEffect } from "react";
 import { Button, message, Space } from "antd";
 

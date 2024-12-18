@@ -1,3 +1,6 @@
+"use client";
+
+
 import { GlobalOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import React from "react";
