@@ -1,4 +1,4 @@
-import { IMaterial } from "../material/IMaterial";
+import IMaterial from "../material/IMaterial";
 
 export interface IBillOfMaterial {
   material: IMaterial;
