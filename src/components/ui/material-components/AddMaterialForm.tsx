@@ -20,7 +20,7 @@ export default function AddMaterialForm({ onSuccess }: { onSuccess: () => void }
       form.resetFields();
       onSuccess();
     } catch (error: any) {
-      console.log("Malzeme ekleme hatası:", error);
+      console.error("Malzeme ekleme hatası:", error);
     }
   };
 
