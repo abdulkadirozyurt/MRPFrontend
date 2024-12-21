@@ -8,6 +8,6 @@ export default interface IMaterial {
   price: number;
   reorderLevel: number;
   priceHistory: Array<{ price: number; date: Date }>;
-  suppliers: Array<ISupplier>;
+  suppliers: Array<string>;
 }
 

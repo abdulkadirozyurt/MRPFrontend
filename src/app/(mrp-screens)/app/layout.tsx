@@ -54,17 +54,12 @@ export default function ApplicationLayout({
 }>) {
   return (
     <div className={`flex flex-col antialiased w-full h-screen`}>
-      {/* <Provider store={store}>
-        <AntdRegistry>
-         
-        </AntdRegistry>
-      </Provider> */}
       <ProtectedRoute>
         <Topbar />
         <Navbar />
 
         <div className="w-full h-full p-4 transition-all duration-300 ease-in-out bg-gray-100">
-          {children}
+          <div className="container mx-auto">{children}</div>
         </div>
       </ProtectedRoute>
     </div>

@@ -1,7 +1,7 @@
-import IMaterial from "@/models/material/IMaterial";
+import ISupplier from "@/models/supplier/ISupplier";
 
-export default interface MaterialState {
-  materials: IMaterial[];
+export default interface SupplierState {
+  suppliers: ISupplier[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   alertMessage: string;

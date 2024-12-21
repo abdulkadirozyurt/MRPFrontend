@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
 import { useEffect, useState } from "react";
 import AddMaterialForm from "./AddMaterialForm";
+import Message from "@/components/common/Message";
 import { SearchOutlined } from "@ant-design/icons";
 import IMaterial from "@/models/material/IMaterial";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, ConfigProvider, Input, Modal, Space, Table, TableColumnsType } from "antd";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
-import Message from "@/components/Message";
+import { Badge, Button, Input, Modal, Select, Space, Table, TableColumnsType } from "antd";
+import ISupplier from "@/models/supplier/ISupplier";
 
 export default function MaterialList() {
   const dispatch: AppDispatch = useDispatch();
@@ -59,11 +59,46 @@ export default function MaterialList() {
       },
     },
     {
+      title: "Tedarikçiler",
+      dataIndex: "suppliers",
+      key: "suppliers",
+      align: "center",
+      className: "",
+      render: (suppliers: ISupplier[]) => (
+        // <Space>
+        //   <Select
+        //     className="!text-red-500"
+        //     mode="multiple"
+        //     disabled
+        //     // style={{ width: "100%" }}
+        //     defaultValue={[...suppliers.map((supplier) => supplier.name)]}
+        //   />
+        // </Space>
+
+        // <Badge
+        // text={suppliers.map((supplier) => supplier.name)}
+        // count={suppliers.length}
+        // style={{ backgroundColor: '#52c41a' }}
+        // >
+
+        <Space>
+          {...suppliers.map((supplier: ISupplier) => (
+            <Badge
+              key={supplier._id}
+              count={supplier.name}
+              style={{ backgroundColor: "grey", marginRight: "1px" }}
+            />
+          ))}
+        </Space>
+      ),
+    },
+    {
       title: "Stok Miktarı",
       dataIndex: "stockAmount",
       key: "stockAmount",
       align: "center",
     },
+
     {
       title: "Birim",
       dataIndex: "unitType",
@@ -128,6 +163,7 @@ export default function MaterialList() {
           okType="primary"
           onCancel={() => setIsModalVisible(false)}
           footer={null}
+          className="!w-4/6"
         >
           <AddMaterialForm onSuccess={handleModalClose} />
         </Modal>

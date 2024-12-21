@@ -38,6 +38,7 @@ export default function Message({
     messageApi.open({
       type: result,
       content: alertMessage,
+      duration: 2,
     });
   }, [result, alertMessage, messageApi]);
 

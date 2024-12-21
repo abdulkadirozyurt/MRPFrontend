@@ -1,6 +1,7 @@
 import IMaterial from "../material/IMaterial";
 
 export default interface ISupplier {
+  _id: string;
   name: string;
   contactName: string;
   contactTitle: string;
