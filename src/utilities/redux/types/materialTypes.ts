@@ -1,9 +1,7 @@
 import IMaterial from "@/models/material/IMaterial";
+import CommonState from "../commonState";
 
-export default interface MaterialState {
+export default interface MaterialState extends CommonState {
   materials: IMaterial[];
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
-  alertMessage: string;
-  alertResult: "info" | "success" | "error" | "warning" | "";
+  
 }

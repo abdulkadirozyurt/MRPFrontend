@@ -1,6 +1,6 @@
 import IMaterial from "../material/IMaterial";
 
 export interface IBillOfMaterial {
-  material: IMaterial;
+  materialId: string;
   quantity: number;
 }

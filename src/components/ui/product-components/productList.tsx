@@ -1,24 +1,35 @@
 "use client";
 
 import axios from "axios";
-import { Input, Table, Tag } from "antd";
+import { Badge, Button, Input, Modal, Space, Table, TableColumnsType, Tag } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { IProduct } from "@/models/product/IProduct";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { IBillOfMaterial } from "@/models/bom/IBillOfMaterial";
+import { deleteProduct, fetchProducts } from "@/utilities/redux/slices/productSlice";
+import Message from "@/components/common/Message";
+import AddProductForm from "./addProductForm";
 
 export default function ProductList() {
-  const [products, setProducts] = useState<IProduct[]>([]);
-  const [searhText, setSearchText] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+  const dispatch: AppDispatch = useDispatch();
+  const products = useSelector((state: RootState) => state.product.products);
+  const status = useSelector((state: RootState) => state.product.status);
+  const alertResult = useSelector((state: RootState) => state.product.alertResult);
+  const alertMessage = useSelector((state: RootState) => state.product.alertMessage);
+  const loading = status === "loading";
 
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searhText.toLowerCase())
+    product.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const columns = [
+  const columns: TableColumnsType<IProduct> = [
     {
-      title: "Name",
+      title: "Ürün",
       dataIndex: "name",
       key: "name",
       sorter: function (a: IProduct, b: IProduct) {
@@ -26,62 +37,117 @@ export default function ProductList() {
       },
     },
     {
-      title: "Description",
+      title: "Açıklama",
       dataIndex: "description",
       key: "description",
     },
     {
-      title: "Materials",
+      title: "Birim",
+      dataIndex: "unitType",
+      key: "unitType",
+    },
+    {
+      title: "Ürün Ağacı",
       dataIndex: "billOfMaterials",
       key: "billOfMaterials",
       render: (billOfMaterials: IBillOfMaterial[]) => (
         <>
           {billOfMaterials &&
             billOfMaterials.map((bom) => (
-              <Tag key={bom.material._id}>{bom.material.name}</Tag>
+              <div>
+                <Tag key={bom.materialId}>{bom.materialId.name} </Tag>{" "}
+                <Tag key={bom.materialId}>{bom.quantity} </Tag>
+              </div>
             ))}
+
+          {/* <Space>
+            {...billOfMaterials.map((bom) => (
+              <Badge
+                key={bom._id}
+                count={bom.quantity}
+                style={{ backgroundColor: "grey", marginRight: "1px" }}
+              />
+            ))}
+          </Space> */}
         </>
+      ),
+    },
+    {
+      title: "İşlemler",
+      key: "actions",
+      align: "center",
+
+      render: (_: any, record: IProduct) => (
+        <Space size="middle">
+          <Button type="link" onClick={() => handleEdit(record._id)}>
+            Düzenle
+          </Button>
+          <Button type="link" danger onClick={() => handleDelete(record._id)}>
+            Sil
+          </Button>
+        </Space>
       ),
     },
   ];
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/products`
-      );
-      setProducts(data.products);
-    } catch (error: any) {
-      console.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
   const handleSearch = (e: any) => {
     setSearchText(e.target.value);
   };
 
+  const handleEdit = (id: string) => {
+    // console.log("Düzenlenecek Malzeme:", record);
+  };
+
+  const handleDelete = (id: string) => {
+    dispatch(deleteProduct(id));
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    dispatch(fetchProducts());
+  };
+
   useEffect(() => {
-    fetchProducts();
+    dispatch(fetchProducts());
   }, []);
 
   return (
-    <div>
-      <Input
-        className="!mb-5 !w-72"
-        value={searhText}
-        onChange={handleSearch}
-        prefix={<SearchOutlined />}
-        placeholder="Search product"
-      />
+    <>
+      {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
+
+      <div className="flex items-center justify-between h-14">
+        <Input
+          className=" !w-72"
+          value={searchText}
+          onChange={handleSearch}
+          prefix={<SearchOutlined />}
+          placeholder="Ara"
+        />
+
+        <Button type="primary" onClick={showModal} className="!m-5">
+          Yeni Ürün Ekle
+        </Button>
+        <Modal
+          open={isModalVisible}
+          okType="primary"
+          onCancel={() => setIsModalVisible(false)}
+          footer={null}
+          className="!w-4/6"
+        >
+          <AddProductForm onSuccess={handleModalClose} />
+        </Modal>
+      </div>
       <Table
-        rowKey="id"
+        rowKey="_id"
         loading={loading}
         columns={columns}
         dataSource={filteredProducts}
         pagination={{ pageSize: 10 }}
       />
-    </div>
+    </>
   );
 }

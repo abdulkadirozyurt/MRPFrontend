@@ -44,8 +44,8 @@
 
 // import "./global.scss";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import Navbar from "@/components/ui/mrp-app-components/navbar";
-import Topbar from "@/components/ui/mrp-app-components/topbar";
+import Navbar from "@/components/ui/mrp-app-layout-components/navbar";
+import Topbar from "@/components/ui/mrp-app-layout-components/topbar";
 
 export default function ApplicationLayout({
   children,

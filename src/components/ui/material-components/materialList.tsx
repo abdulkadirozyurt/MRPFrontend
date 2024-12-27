@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AddMaterialForm from "./AddMaterialForm";
 import Message from "@/components/common/Message";
 import { SearchOutlined } from "@ant-design/icons";
 import IMaterial from "@/models/material/IMaterial";
+import ISupplier from "@/models/supplier/ISupplier";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
-import { Badge, Button, Input, Modal, Select, Space, Table, TableColumnsType } from "antd";
-import ISupplier from "@/models/supplier/ISupplier";
+import { Badge, Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
+import AddMaterialForm from "./addMaterialForm";
 
 export default function MaterialList() {
   const dispatch: AppDispatch = useDispatch();
@@ -23,8 +23,7 @@ export default function MaterialList() {
   const loading = status === "loading";
 
   const filteredMaterials = materials.filter(
-    (material) =>
-      material && material.name && material.name.toLowerCase().includes(searchText.toLowerCase())
+    (material) => material && material.name && material.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const showModal = () => {

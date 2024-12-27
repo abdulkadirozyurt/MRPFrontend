@@ -1,8 +1,9 @@
 import { IBillOfMaterial } from "../bom/IBillOfMaterial";
 
 export interface IProduct {
-  id: string;
+  _id: string;
   name: string;
   description: string;
-  billOfMaterials?: IBillOfMaterial[];
+  billOfMaterials?: string[];
+  unitType: string;
 }
