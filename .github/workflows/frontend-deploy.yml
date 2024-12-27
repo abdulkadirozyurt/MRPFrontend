@@ -23,10 +23,11 @@ jobs:
 
       - name: Validate SSH Key
         run: |
+          mkdir -p ~/.ssh
           echo "${{ secrets.VDS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_rsa
           ssh -i ~/.ssh/id_rsa root@193.35.154.226 "echo SSH connection successful"
-
 
       - name: Copy Frontend to VDS
         uses: appleboy/scp-action@v0.1.1
@@ -37,13 +38,3 @@ jobs:
           source: ./.next
           target: /var/www/frontend
           debug: true
-
-
-
-
-
-
-
-
-
-
