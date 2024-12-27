@@ -30,3 +30,12 @@ jobs:
           source: ./.next
           target: /var/www/frontend
           debug: true
+
+      - name: Start Frontend with PM2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@193.35.154.226 << 'EOF'
+            cd /var/www/frontend
+            pm2 stop frontend-app || true
+            pm2 delete frontend-app || true
+            pm2 start "npm run start" --name "frontend-app"
+          EOF
