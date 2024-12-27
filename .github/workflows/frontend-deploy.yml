@@ -27,8 +27,8 @@ jobs:
           host: 193.35.154.226
           username: root
           key: ${{ secrets.VDS_SSH_KEY }}
-          source: ./dist/*
+          source: ./dist
           target: /var/www/frontend
-          
+
 
 
