@@ -111,7 +111,7 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
                       <Form.Item
                         {...restField}
                         name={[name, "materialId"]}
-                        fieldKey={[fieldKey, "materialId"]}
+                        fieldKey={[fieldKey ?? 0, "materialId"]}
                         rules={[{ required: true, message: "Malzeme seçiniz!" }]}
                         className="h-full"
                       >
@@ -127,7 +127,7 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
                       <Form.Item
                         {...restField}
                         name={[name, "quantity"]}
-                        fieldKey={[fieldKey, "quantity"]}
+                        fieldKey={[fieldKey ?? 0, "quantity"]}
                         rules={[{ required: true, message: "Miktar giriniz!" }]}
                         // className="w-1/4"
                       >
