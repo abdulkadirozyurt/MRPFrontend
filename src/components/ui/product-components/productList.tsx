@@ -55,7 +55,9 @@ export default function ProductList() {
           {billOfMaterials &&
             billOfMaterials.map((bom) => (
               <div>
-                <Tag key={bom.materialId}>{bom.materialId.name} </Tag>{" "}
+                <Tag key={bom.materialId}>
+                  {typeof bom.materialId === "object" && "name" in bom.materialId ? bom.materialId.name : bom.materialId}
+                </Tag>{" "}
                 <Tag key={bom.materialId}>{bom.quantity} </Tag>
               </div>
             ))}

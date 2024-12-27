@@ -1,4 +1,4 @@
 export interface IBillOfMaterial {
-  materialId: string;
+  materialId: string | { name: string };
   quantity: number;
 }
