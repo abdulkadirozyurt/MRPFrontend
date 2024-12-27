@@ -29,5 +29,6 @@ jobs:
           key: ${{ secrets.VDS_SSH_KEY }}
           source: ./dist/*
           target: /var/www/frontend
+          
 
 
