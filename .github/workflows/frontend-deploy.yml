@@ -29,7 +29,8 @@ jobs:
           key: ${{ secrets.VDS_SSH_KEY }}
           source: ./.next
           target: /var/www/frontend
-          
+          debug: true
+
 
 
 
