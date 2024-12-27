@@ -50,10 +50,10 @@ export default function ProductList() {
       title: "Ürün Ağacı",
       dataIndex: "billOfMaterials",
       key: "billOfMaterials",
-      render: (billOfMaterials: IBillOfMaterial[]) => (
+      render: (billOfMaterials) => (
         <>
           {billOfMaterials &&
-            billOfMaterials.map((bom) => (
+            billOfMaterials.map((bom: any) => (
               <div>
                 <Tag key={bom.materialId}>{bom.materialId.name} </Tag>{" "}
                 <Tag key={bom.materialId}>{bom.quantity} </Tag>
