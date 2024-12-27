@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
 import { Badge, Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
-import AddMaterialForm from "./addMaterialForm";
 
 export default function MaterialList() {
   const dispatch: AppDispatch = useDispatch();
