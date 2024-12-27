@@ -40,3 +40,4 @@ jobs:
           source: ./.next
           target: /var/www/frontend
           debug: true
+          
