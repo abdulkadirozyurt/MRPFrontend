@@ -21,6 +21,14 @@ jobs:
         run: |
           npm run build
 
+      - name: Validate SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VDS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 193.35.154.226 >> ~/.ssh/known_hosts
+
       - name: Copy Frontend to VDS
         uses: appleboy/scp-action@v0.1.1
         with:
