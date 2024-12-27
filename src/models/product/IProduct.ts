@@ -4,6 +4,6 @@ export interface IProduct {
   _id: string;
   name: string;
   description: string;
-  billOfMaterials?: string[];
+  billOfMaterials?: IBillOfMaterial[];
   unitType: string;
 }
