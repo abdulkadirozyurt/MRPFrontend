@@ -48,3 +48,4 @@ jobs:
             pm2 delete frontend-app || true
             pm2 start "npm run start" --name "frontend-app"
           EOF
+
