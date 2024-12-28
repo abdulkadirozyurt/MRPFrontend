@@ -41,5 +41,8 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
             docker stop frontend-container || true
             docker rm frontend-container || true
-            docker run -d --name frontend-container -p 80:3000 ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
+            docker run -d --name frontend-container \
+              -p 80:3000 \
+              -e NEXT_PUBLIC_API_URL=http://${{ secrets.VDS_IP }} \
+              ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
           EOF
