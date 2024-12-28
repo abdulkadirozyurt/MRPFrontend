@@ -28,9 +28,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build --no-cache --platform=linux/amd64 \
-            --build-arg NEXT_PUBLIC_API_URL=http://${{ secrets.VDS_IP }} \
-            -t my-frontend-image .
+          echo "NEXT_PUBLIC_API_URL=http://${{ secrets.VDS_IP }}" > .env
+          docker build --no-cache --platform=linux/amd64 -t my-frontend-image .
           docker tag my-frontend-image ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
 
       - name: Push Docker Image to DockerHub
