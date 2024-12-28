@@ -47,7 +47,7 @@ jobs:
           docker rm frontend-container || true
           docker run -d \
             --name frontend-container \
-            -p 80:3000 \
+            -p 3001:3000 \
             $DOCKER_USERNAME/my-frontend-image:latest
           EOFMARK
 
