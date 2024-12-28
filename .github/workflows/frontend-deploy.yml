@@ -35,9 +35,10 @@ jobs:
           host: 193.35.154.226
           username: root
           key: ${{ secrets.VDS_SSH_KEY }}
-          source: ./.next
+          source: ./*
           target: /var/www/frontend
           debug: true
+
 
       - name: Start Frontend with PM2
         run: |
