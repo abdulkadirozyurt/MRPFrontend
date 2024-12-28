@@ -28,7 +28,9 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build --no-cache --platform=linux/amd64 -t my-frontend-image .
+          docker build --no-cache --platform=linux/amd64 \
+            --build-arg NEXT_PUBLIC_API_URL=http://${{ secrets.VDS_IP }} \
+            -t my-frontend-image .
           docker tag my-frontend-image ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
 
       - name: Push Docker Image to DockerHub
@@ -41,14 +43,11 @@ jobs:
           VDS_IP: ${{ secrets.VDS_IP }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ secrets.VDS_IP }} << EOFMARK
-          echo "NEXT_PUBLIC_API_URL=http://$VDS_IP" > /var/www/frontend/.env
-
           docker pull $DOCKER_USERNAME/my-frontend-image:latest
           docker stop frontend-container || true
           docker rm frontend-container || true
           docker run -d \
             --name frontend-container \
-            --env-file /var/www/frontend/.env \
             -p 80:3000 \
             $DOCKER_USERNAME/my-frontend-image:latest
           EOFMARK
