@@ -50,5 +50,3 @@ jobs:
             -p 3001:3000 \
             $DOCKER_USERNAME/my-frontend-image:latest
           EOFMARK
-
-
