@@ -39,7 +39,6 @@
 #           target: /var/www/frontend
 #           debug: true
 
-
 #       - name: Start Frontend with PM2
 #         run: |
 #           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@193.35.154.226 << 'EOF'
@@ -48,7 +47,6 @@
 #             pm2 delete frontend-app || true
 #             pm2 start "npm run start" --name "frontend-app"
 #           EOF
-
 
 name: Deploy Frontend
 
@@ -70,6 +68,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Configure SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VDS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VDS_IP }} >> ~/.ssh/known_hosts
 
       - name: Build Docker Image
         run: |
