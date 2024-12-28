@@ -41,12 +41,14 @@ jobs:
           VDS_IP: ${{ secrets.VDS_IP }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ secrets.VDS_IP }} << EOFMARK
+          echo "NEXT_PUBLIC_API_URL=http://$VDS_IP" > /var/www/frontend/.env
+
           docker pull $DOCKER_USERNAME/my-frontend-image:latest
           docker stop frontend-container || true
           docker rm frontend-container || true
           docker run -d \
             --name frontend-container \
+            --env-file /var/www/frontend/.env \
             -p 80:3000 \
-            -e NEXT_PUBLIC_API_URL="http://$VDS_IP" \
             $DOCKER_USERNAME/my-frontend-image:latest
           EOFMARK
