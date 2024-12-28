@@ -36,13 +36,17 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
 
       - name: Deploy to VDS
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          VDS_IP: ${{ secrets.VDS_IP }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ secrets.VDS_IP }} << 'EOF'
-            docker pull ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
-            docker stop frontend-container || true
-            docker rm frontend-container || true
-            docker run -d --name frontend-container \
-              -p 80:3000 \
-              -e NEXT_PUBLIC_API_URL=http://${{ secrets.VDS_IP }} \
-              ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
-          EOF
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ secrets.VDS_IP }} << EOFMARK
+          docker pull $DOCKER_USERNAME/my-frontend-image:latest
+          docker stop frontend-container || true
+          docker rm frontend-container || true
+          docker run -d \
+            --name frontend-container \
+            -p 80:3000 \
+            -e NEXT_PUBLIC_API_URL="http://$VDS_IP" \
+            $DOCKER_USERNAME/my-frontend-image:latest
+          EOFMARK
