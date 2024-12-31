@@ -5,8 +5,10 @@ import SupplierOrdersState from "../types/supplierOrderTypes";
 import { ISupplierOrder } from "@/models/order/ISupplierOrder";
 
 const alertMessages = {
-  fetchSuccess: "Tedarikçi siparişleri başarıyla listelendi.",
-  fetchError: "Tedarikçi siparişleri listelenirken bir hata oluştu!",
+  fetchSupplierOrdersSuccess: "Tedarikçi siparişleri başarıyla getirildi.",
+  fetchSupplierOrdersError: "Tedarikçi siparişleri getirilirken hata oluştu.",
+  addSupplierOrderSuccess: "Tedarikçi siparişi başarıyla eklendi.",
+  addSupplierOrderError: "Tedarikçi siparişi eklenirken hata oluştu.",
 };
 
 const initialState: SupplierOrdersState = {
@@ -22,11 +24,25 @@ export const fetchSupplierOrders = createAsyncThunk("supplierOrder/fetchSupplier
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/supplier-orders`);
   return response.data.orders;
 });
+export const addSupplierOrder = createAsyncThunk(
+  "supplierOrder/addSupplierOrder",
+  async (newOrder: ISupplierOrder, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/supplier-orders`, newOrder);
+      return response.data.supplierOrder;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Tedarikçi siparişi ekleme başarısız oldu.");
+    }
+  }
+);
 
 const supplierOrderSlice = createSlice({
   name: "supplierOrder",
   initialState,
   reducers: {
+    resetError: (state) => {
+      state.error = null;
+    },
     resetAlert: (state) => {
       state.alertMessage = "";
       state.alertResult = "";
@@ -34,22 +50,38 @@ const supplierOrderSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchSupplierOrders.pending, (state) => {
+      // addSupplierOrder
+      .addCase(addSupplierOrder.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchSupplierOrders.fulfilled, (state, action: PayloadAction<ISupplierOrder[]>) => {
+      .addCase(addSupplierOrder.fulfilled, (state, action: PayloadAction<ISupplierOrder>) => {
         state.status = "succeeded";
-        state.orders = action.payload;
-        state.alertMessage = alertMessages.fetchSuccess;
-        state.alertResult = "info";
+        state.alertMessage = alertMessages.addSupplierOrderSuccess;
+        state.alertResult = "success";
+        state.orders.push(action.payload);
       })
-      .addCase(fetchSupplierOrders.rejected, (state) => {
+      .addCase(addSupplierOrder.rejected, (state, action) => {
         state.status = "failed";
-        state.alertMessage = alertMessages.fetchError;
+        state.alertMessage = alertMessages.addSupplierOrderError;
         state.alertResult = "error";
-      });
+        state.error = (action.payload as string) || "Tedarikçi siparişi eklenirken hata oluştu.";
+      })
+
+      // Diğer matcher'lar (Fulfilled & Rejected genel durumları)
+      .addMatcher(
+        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+        (state) => {
+          setTimeout(() => {
+            state.alertMessage = "";
+            state.alertResult = "";
+          }, 3000);
+        }
+      );
   },
 });
 
-export const { resetAlert } = supplierOrderSlice.actions;
+export const { resetError, resetAlert } = supplierOrderSlice.actions;
 export default supplierOrderSlice;
+
+
+
