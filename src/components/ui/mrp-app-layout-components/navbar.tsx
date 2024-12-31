@@ -147,11 +147,11 @@ const items: MenuItem[] = [
     children: [
       {
         key: "customer-orders",
-        label: <Link href="/app/orders/customers">Müşteri Siparişleri</Link>,
+        label: <Link href="/app/orders/customer-orders">Müşteri Siparişleri</Link>,
       },
       {
         key: "supplier-orders",
-        label: <Link href="/app/orders/suppliers">Tedarikçi Siparişleri</Link>,
+        label: <Link href="/app/orders/supplier-orders">Tedarikçi Siparişleri</Link>,
       },
     ],
   },
