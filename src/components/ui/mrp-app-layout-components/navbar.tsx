@@ -107,6 +107,7 @@ import {
   FileTextOutlined,
   ShoppingCartOutlined,
   SettingOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
@@ -120,6 +121,11 @@ const items: MenuItem[] = [
     key: "dashboard",
     icon: <DashboardOutlined />,
     label: <Link href="/app/dashboard">Dashboard</Link>,
+  },
+  {
+    key: "customers",
+    icon: <UserOutlined />,
+    label: <Link href="/app/customers">Müşteriler</Link>,
   },
   {
     label: "Envanter Yönetimi",
