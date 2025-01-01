@@ -1,9 +1,6 @@
 import ISupplier from "@/models/supplier/ISupplier";
+import CommonState from "../commonState";
 
-export default interface SupplierState {
+export default interface SupplierState extends CommonState {
   suppliers: ISupplier[];
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
-  alertMessage: string;
-  alertResult: "info" | "success" | "error" | "warning" | "";
 }

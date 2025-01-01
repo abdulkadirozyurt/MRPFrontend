@@ -1,8 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import CustomerOrdersState from "@/utilities/redux/types/customerOrderTypes";
+import axios from "axios";
 import { ICustomerOrder } from "@/models/order/ICustomerOrder";
+import CustomerOrdersState from "@/utilities/redux/types/customerOrderTypes";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: CustomerOrdersState = {
   orders: [],
