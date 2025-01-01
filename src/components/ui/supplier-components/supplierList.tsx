@@ -202,7 +202,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import AddSupplierForm from "./AddSupplierForm";
+import AddSupplierForm from "./addSupplierForm";
 import UpdateSupplierForm from "./updateSupplierForm";
 
 export default function SupplierList() {

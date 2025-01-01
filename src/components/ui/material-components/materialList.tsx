@@ -84,7 +84,7 @@ export default function MaterialList() {
           {...suppliers.map((supplier: ISupplier) => (
             <Badge
               key={supplier._id}
-              count={supplier.name}
+              count={supplier.companyName}
               style={{ backgroundColor: "grey", marginRight: "1px" }}
             />
           ))}
