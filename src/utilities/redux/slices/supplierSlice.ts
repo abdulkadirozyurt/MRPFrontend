@@ -104,12 +104,12 @@ const supplierSlice = createSlice({
       .addCase(deleteSupplier.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(deleteSupplier.fulfilled, (state, action) => {
+      .addCase(deleteSupplier.fulfilled, (state) => {
         state.status = "succeeded";
         state.alertMessage = alertMessages.deleteSupplierSuccess;
         state.alertResult = "success";
-        state.suppliers = state.suppliers.filter((supplier) => supplier._id !== action.payload);
       })
+
       .addCase(deleteSupplier.rejected, (state, action) => {
         state.status = "failed";
         state.alertMessage = alertMessages.deleteSupplierError;

@@ -2,7 +2,7 @@ import IMaterial from "../material/IMaterial";
 
 export default interface ISupplier {
   _id: string;
-  name: string;
+  companyName: string;
   contactName: string;
   contactTitle: string;
   address: string;

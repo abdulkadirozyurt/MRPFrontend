@@ -32,7 +32,6 @@
 //         key: "materials",
 //         label: <Link href="/app/materials">Malzemeler</Link>,
 //       },
-      
 
 //       // {
 //       //   type: "group",
@@ -97,7 +96,6 @@
 //   );
 // }
 
-
 "use client";
 
 import {
@@ -108,6 +106,7 @@ import {
   ShoppingCartOutlined,
   SettingOutlined,
   UserOutlined,
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
@@ -122,11 +121,28 @@ const items: MenuItem[] = [
     icon: <DashboardOutlined />,
     label: <Link href="/app/dashboard">Dashboard</Link>,
   },
+  // {
+  //   key: "customers",
+  //   icon: <UserOutlined />,
+  //   label: <Link href="/app/customers">Müşteriler</Link>,
+  // },
+
   {
-    key: "customers",
-    icon: <UserOutlined />,
-    label: <Link href="/app/customers">Müşteriler</Link>,
+    label: "Firmalar",
+    key: "companies",
+    icon: <UsergroupAddOutlined />,
+    children: [
+      {
+        key: "suppliers",
+        label: <Link href="/app/suppliers">Tedarikçiler</Link>,
+      },
+      {
+        key: "customers",
+        label: <Link href="/app/customers">Müşteriler</Link>,
+      },
+    ],
   },
+
   {
     label: "Envanter Yönetimi",
     key: "inventory",
@@ -204,12 +220,5 @@ export default function Navbar() {
     setCurrent(e.key);
   };
 
-  return (
-    <Menu
-      onClick={onClick}
-      selectedKeys={[current]}
-      mode="horizontal"
-      items={items}
-    />
-  );
+  return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
 }
