@@ -61,11 +61,15 @@ const customerSlice = createSlice({
 
       .addCase(addCustomer.fulfilled, (state, action: PayloadAction<ICustomer>) => {
         state.customers.push(action.payload);
+        state.alertMessage = "Müşteri başarıyla eklendi";
+        state.alertResult = "success";
       })
 
       .addCase(addCustomer.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
+        state.alertMessage = "Müşteri eklenirken bir hata oluştu";
+        state.alertResult = "error";
       })
 
       .addCase(deleteCustomer.pending, (state) => {
@@ -74,11 +78,17 @@ const customerSlice = createSlice({
 
       .addCase(deleteCustomer.fulfilled, (state, action: PayloadAction<string>) => {
         state.customers = state.customers.filter((customer) => customer._id !== action.payload);
+        state.alertMessage = "Müşteri başarıyla silindi";
+        state.alertResult = "success";
+        state.status = "succeeded";
       })
 
       .addCase(deleteCustomer.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
+        state.alertMessage = "Müşteri silinirken bir hata oluştu";
+        state.alertResult = "error";
+        state.status = "failed";
       })
 
       .addCase(updateCustomer.pending, (state) => {
@@ -87,10 +97,16 @@ const customerSlice = createSlice({
       .addCase(updateCustomer.fulfilled, (state, action: PayloadAction<ICustomer>) => {
         state.status = "succeeded";
         state.customers = state.customers.map((customer) => (customer._id === action.payload._id ? action.payload : customer));
+        state.alertMessage = "Müşteri başarıyla güncellendi";
+        state.alertResult = "success";
+        state.status = "succeeded";
       })
       .addCase(updateCustomer.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
+        state.alertMessage = "Müşteri güncellenirken bir hata oluştu";
+        state.alertResult = "error";
+        state.status = "failed";
       })
 
       .addMatcher(

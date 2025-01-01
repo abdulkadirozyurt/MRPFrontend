@@ -2,25 +2,36 @@
 
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/utilities/redux/store";
-import { addCustomer } from "@/utilities/redux/slices/customerSlice";
+import { updateCustomer } from "@/utilities/redux/slices/customerSlice";
 import { Button, Form, Input } from "antd";
 
-export default function CustomerAddForm({ onSuccess }: { onSuccess: () => void }) {
+export default function UpdateCustomerForm({
+  initialValues,
+  onSuccess,
+}: {
+  initialValues: any;
+  onSuccess: () => void;
+}) {
   const dispatch = useDispatch<AppDispatch>();
   const [form] = Form.useForm();
 
   const onFinish = async (values: any) => {
     try {
-      await dispatch(addCustomer(values)).unwrap();
+      await dispatch(updateCustomer({ id: initialValues._id, updatedCustomer: values })).unwrap();
       form.resetFields();
       onSuccess();
     } catch (error) {
-      console.error("Müşteri eklenirken hata oluştu:", error);
+      console.error("Müşteri güncellenirken hata oluştu:", error);
     }
   };
 
   return (
-    <Form form={form} onFinish={onFinish} layout="horizontal">
+    <Form
+      form={form}
+      initialValues={initialValues}
+      onFinish={onFinish}
+      layout="horizontal"
+    >
       <Form.Item name="companyName" label="Şirket Adı" rules={[{ required: true, message: "Zorunlu alan" }]}>
         <Input />
       </Form.Item>
@@ -30,7 +41,6 @@ export default function CustomerAddForm({ onSuccess }: { onSuccess: () => void }
       <Form.Item name="contactTitle" label="Yetkili Ünvanı" rules={[{ required: true, message: "Zorunlu alan" }]}>
         <Input />
       </Form.Item>
-
       <Form.Item name="email" label="E-posta" rules={[{ required: true, type: "email", message: "Geçerli bir e-posta girin" }]}>
         <Input />
       </Form.Item>
@@ -47,7 +57,7 @@ export default function CustomerAddForm({ onSuccess }: { onSuccess: () => void }
         <Input.TextArea />
       </Form.Item>
       <Button type="primary" htmlType="submit">
-        Ekle
+        Güncelle
       </Button>
     </Form>
   );
