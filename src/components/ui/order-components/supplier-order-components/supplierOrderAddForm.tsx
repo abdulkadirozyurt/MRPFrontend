@@ -47,7 +47,7 @@ export default function SupplierOrderAddForm({ onSuccess }: { onSuccess: () => v
         <Select placeholder="Tedarikçi Seçiniz">
           {suppliers.map((supplier) => (
             <Option key={supplier._id} value={supplier._id}>
-              {supplier.name}
+              {supplier.companyName}
             </Option>
           ))}
         </Select>

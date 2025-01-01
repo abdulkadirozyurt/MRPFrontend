@@ -12,11 +12,6 @@ export default function SupplierOrderList() {
   const status = useSelector((state: RootState) => state.supplierOrders.status);
 
   const columns = [
-    // {
-    //   title: "Sipariş Numarası",
-    //   dataIndex: "_id",
-    //   key: "_id",
-    // },
     {
       title: "Depo",
       dataIndex: "warehouseId",

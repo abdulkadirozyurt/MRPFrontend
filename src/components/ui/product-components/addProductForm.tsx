@@ -1,12 +1,11 @@
 "use client";
 
-import Multiselect from "@/components/common/Multiselect";
 import { IBillOfMaterial } from "@/models/bom/IBillOfMaterial";
 import { UNIT_TYPES } from "@/utilities/constants/product";
 import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
 import { addProduct } from "@/utilities/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { Button, Form, Input, InputNumber, Select, Space } from "antd";
+import { Button, Form, Input, InputNumber, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,18 +22,6 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
   const products = useSelector((state: RootState) => state.product.products);
   const materials = useSelector((state: RootState) => state.material.materials);
   const [selectedMaterialIds, setSelectedMaterialIds] = useState<string[]>([]);
-
-  // const onFinish = async (values: any) => {
-  //   console.log("values-> ", values);
-
-  //   try {
-  //     await dispatch(addProduct(values)).unwrap();
-  //     form.resetFields();
-  //     onSuccess();
-  //   } catch (error: any) {
-  //     console.error("Malzeme ekleme hatası:", error);
-  //   }
-  // };
 
   const onFinish = async (values: any) => {
     try {
@@ -73,19 +60,11 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
       >
         <div className="container flex flex-col px-6 md:mx-auto md:px-12 md:flex-row md:justify-center md:gap-5">
           <div className="w-full md:w-2/5">
-            <Form.Item
-              name="name"
-              label="Ürün Adı"
-              rules={[{ required: true, message: "Lütfen ürün adını giriniz!" }]}
-            >
+            <Form.Item name="name" label="Ürün Adı" rules={[{ required: true, message: "Lütfen ürün adını giriniz!" }]}>
               <Input placeholder="Ürün adını giriniz" />
             </Form.Item>
 
-            <Form.Item
-              name="description"
-              label="Açıklama"
-              rules={[{ type: "string", message: "Lütfen bir metin giriniz." }]}
-            >
+            <Form.Item name="description" label="Açıklama" rules={[{ type: "string", message: "Lütfen bir metin giriniz." }]}>
               <Input placeholder="Ürün Açıklaması" className="!w-full" />
             </Form.Item>
             <Form.Item
@@ -134,13 +113,7 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
                         <InputNumber placeholder="Miktar" min={1} />
                       </Form.Item>
 
-                      <Button
-                        className="!h-full"
-                        type="primary"
-                        danger
-                        shape="round"
-                        onClick={() => remove(name)}
-                      >
+                      <Button className="!h-full" type="primary" danger shape="round" onClick={() => remove(name)}>
                         Sil
                       </Button>
                     </div>

@@ -1,15 +1,13 @@
 "use client";
 
-import axios from "axios";
-import { Badge, Button, Input, Modal, Space, Table, TableColumnsType, Tag } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import { IProduct } from "@/models/product/IProduct";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { IBillOfMaterial } from "@/models/bom/IBillOfMaterial";
-import { deleteProduct, fetchProducts } from "@/utilities/redux/slices/productSlice";
 import Message from "@/components/common/Message";
+import { IProduct } from "@/models/product/IProduct";
+import { deleteProduct, fetchProducts } from "@/utilities/redux/slices/productSlice";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Modal, Space, Table, TableColumnsType, Tag } from "antd";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AddProductForm from "./addProductForm";
 
 export default function ProductList() {
