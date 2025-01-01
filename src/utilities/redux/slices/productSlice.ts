@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import ProductState from "../types/productTypes";
 import { IProduct } from "@/models/product/IProduct";
@@ -37,6 +37,15 @@ export const addProduct = createAsyncThunk( "product/addProduct", async (newProd
   }
 });
 
+export const updateProduct = createAsyncThunk("product/updateProduct", async (updatedProduct: IProduct, { rejectWithValue }) => {
+  try {
+    const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, updatedProduct);
+    return response.data.product;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data.message || "Ürün güncelleme başarısız oldu.");
+  }
+});
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -64,6 +73,46 @@ const productSlice = createSlice({
         state.status = "failed";
         state.alertMessage = alertMessages.fetchProductsError;
         state.alertResult = "error";
+      })
+
+      .addCase(addProduct.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(addProduct.fulfilled, (state, action: PayloadAction<IProduct>) => {
+        state.products.push(action.payload);
+      })
+
+      .addCase(addProduct.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
+        })    
+
+      .addCase(updateProduct.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(updateProduct.fulfilled, (state, action: PayloadAction<IProduct>) => {
+        state.status = "succeeded";
+        state.products = state.products.map((product) => (product._id === action.payload._id ? action.payload : product));
+      })
+
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
+      })
+
+      .addCase(deleteProduct.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<string>) => {
+        state.products = state.products.filter((product) => product._id !== action.payload);
+      })
+
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
       })
 
       .addMatcher(

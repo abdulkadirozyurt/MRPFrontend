@@ -26,6 +26,17 @@ export const deleteCustomer = createAsyncThunk("customers/delete", async (id: st
   return id;
 });
 
+export const updateCustomer = createAsyncThunk(
+  "customers/update",
+  async ({ id, updatedCustomer }: { id: string; updatedCustomer: Partial<ICustomer> }) => {
+    const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/customers`, {
+      id,
+      ...updatedCustomer,
+    });
+    return response.data.customer;
+  }
+);
+
 const customerSlice = createSlice({
   name: "customers",
   initialState,
@@ -43,12 +54,54 @@ const customerSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || null;
       })
+
+      .addCase(addCustomer.pending, (state) => {
+        state.status = "loading";
+      })
+
       .addCase(addCustomer.fulfilled, (state, action: PayloadAction<ICustomer>) => {
         state.customers.push(action.payload);
       })
+
+      .addCase(addCustomer.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
+      })
+
+      .addCase(deleteCustomer.pending, (state) => {
+        state.status = "loading";
+      })
+
       .addCase(deleteCustomer.fulfilled, (state, action: PayloadAction<string>) => {
         state.customers = state.customers.filter((customer) => customer._id !== action.payload);
-      });
+      })
+
+      .addCase(deleteCustomer.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
+      })
+
+      .addCase(updateCustomer.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateCustomer.fulfilled, (state, action: PayloadAction<ICustomer>) => {
+        state.status = "succeeded";
+        state.customers = state.customers.map((customer) => (customer._id === action.payload._id ? action.payload : customer));
+      })
+      .addCase(updateCustomer.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
+      })
+
+      .addMatcher(
+        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+        (state) => {
+          setTimeout(() => {
+            state.alertMessage = "";
+            state.alertResult = "";
+          }, 3000);
+        }
+      );
   },
 });
 
