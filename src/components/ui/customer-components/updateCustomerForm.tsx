@@ -5,13 +5,7 @@ import { AppDispatch } from "@/utilities/redux/store";
 import { updateCustomer } from "@/utilities/redux/slices/customerSlice";
 import { Button, Form, Input } from "antd";
 
-export default function UpdateCustomerForm({
-  initialValues,
-  onSuccess,
-}: {
-  initialValues: any;
-  onSuccess: () => void;
-}) {
+export default function UpdateCustomerForm({ initialValues, onSuccess }: { initialValues: any; onSuccess: () => void }) {
   const dispatch = useDispatch<AppDispatch>();
   const [form] = Form.useForm();
 
@@ -26,12 +20,7 @@ export default function UpdateCustomerForm({
   };
 
   return (
-    <Form
-      form={form}
-      initialValues={initialValues}
-      onFinish={onFinish}
-      layout="horizontal"
-    >
+    <Form form={form} initialValues={initialValues} onFinish={onFinish} layout="horizontal">
       <Form.Item name="companyName" label="Şirket Adı" rules={[{ required: true, message: "Zorunlu alan" }]}>
         <Input />
       </Form.Item>

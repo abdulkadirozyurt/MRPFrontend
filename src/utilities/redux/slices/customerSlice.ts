@@ -49,10 +49,14 @@ const customerSlice = createSlice({
       .addCase(fetchCustomers.fulfilled, (state, action: PayloadAction<ICustomer[]>) => {
         state.status = "succeeded";
         state.customers = action.payload;
+        state.alertMessage = "Müşteriler başarıyla yüklendi";
+        state.alertResult = "success";
       })
       .addCase(fetchCustomers.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
+        state.alertMessage = "Müşteriler yüklenirken bir hata oluştu";
+        state.alertResult = "error";
       })
 
       .addCase(addCustomer.pending, (state) => {
@@ -63,13 +67,15 @@ const customerSlice = createSlice({
         state.customers.push(action.payload);
         state.alertMessage = "Müşteri başarıyla eklendi";
         state.alertResult = "success";
+        state.status = "succeeded";
       })
 
       .addCase(addCustomer.rejected, (state, action) => {
-        state.status = "failed";
+          state.status = "failed";
         state.error = action.error.message || null;
         state.alertMessage = "Müşteri eklenirken bir hata oluştu";
         state.alertResult = "error";
+        state.status = "failed";
       })
 
       .addCase(deleteCustomer.pending, (state) => {
