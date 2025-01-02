@@ -1,6 +1,5 @@
 import { ICustomerOrder } from "@/models/order/ICustomerOrder";
-import { toUTC } from "@/utilities/dates/datetime-util";
-import { autoFormatToLocale, toLocalTime } from "@/utilities/dates/datetime-util";
+import { toLocalTime, toUTC } from "@/utilities/dates/datetime-util";
 import { Button, DatePicker, Form, Input, Select } from "antd";
 
 const { Option } = Select;

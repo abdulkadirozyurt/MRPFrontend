@@ -1,13 +1,13 @@
 "use client";
 
+import { toLocalTime } from "@/utilities/dates/datetime-util";
+import { addCustomerOrder } from "@/utilities/redux/slices/customerOrderSlice";
+import { fetchCustomers } from "@/utilities/redux/slices/customerSlice";
+import { fetchProducts } from "@/utilities/redux/slices/productSlice";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { fetchProducts } from "@/utilities/redux/slices/productSlice";
-import { addCustomerOrder } from "@/utilities/redux/slices/customerOrderSlice";
-import { Button, Form, Input, InputNumber, Select, DatePicker, Space } from "antd";
-import { fetchCustomers } from "@/utilities/redux/slices/customerSlice";
-import { formatToLocale } from "@/utilities/dates/datetime-util";
 
 const { Option } = Select;
 
@@ -130,7 +130,7 @@ export default function AddCustomerOrderForm({ onSuccess }: { onSuccess: () => v
           }),
         ]}
       >
-        <DatePicker className="w-full" showTime showHour showMinute format={(value) => formatToLocale(value.toDate(), "L LT")} />
+        <DatePicker className="w-full" showTime showHour showMinute format={(value) => toLocalTime(value.toDate())} />
       </Form.Item>
 
       <Form.Item
