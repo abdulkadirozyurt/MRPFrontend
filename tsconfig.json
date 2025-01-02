@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -14,6 +14,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": ".",
 
     "plugins": [
       {
@@ -21,7 +22,7 @@
       }
     ],
     "paths": {
-      // "dayjs/locale/*": ["./node_modules/dayjs/locale/*"],
+      "dayjs/locale/*": ["node_modules/dayjs/locale/*"],
       "@/*": ["./src/*"]
       
     }
