@@ -1,3 +1,5 @@
+"use client";
+
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -82,6 +84,3 @@ const supplierOrderSlice = createSlice({
 
 export const { resetError, resetAlert } = supplierOrderSlice.actions;
 export default supplierOrderSlice;
-
-
-

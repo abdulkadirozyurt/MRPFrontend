@@ -1,3 +1,5 @@
+"use client";
+
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import CustomerState from "../types/customerTypes";
@@ -71,7 +73,7 @@ const customerSlice = createSlice({
       })
 
       .addCase(addCustomer.rejected, (state, action) => {
-          state.status = "failed";
+        state.status = "failed";
         state.error = action.error.message || null;
         state.alertMessage = "Müşteri eklenirken bir hata oluştu";
         state.alertResult = "error";

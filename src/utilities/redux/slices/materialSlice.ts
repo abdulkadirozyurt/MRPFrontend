@@ -1,3 +1,5 @@
+"use client";
+
 import IMaterial from "@/models/material/IMaterial";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -23,20 +25,14 @@ export const fetchMaterials = createAsyncThunk("material/fetchMaterials", async 
   return response.data.materials;
 });
 
-export const addMaterial = createAsyncThunk(
-  "material/addMaterial",
-  async (newMaterial: IMaterial, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/materials`,
-        newMaterial
-      );
-      return response.data.material;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data.message || "material add failed");
-    }
+export const addMaterial = createAsyncThunk("material/addMaterial", async (newMaterial: IMaterial, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, newMaterial);
+    return response.data.material;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data.message || "material add failed");
   }
-);
+});
 
 const materialSlice = createSlice({
   name: "material",

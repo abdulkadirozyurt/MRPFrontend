@@ -24,8 +24,10 @@ export default function SupplierOrderAddForm({ onSuccess }: { onSuccess: () => v
   }, [dispatch]);
 
   const onFinish = async (values: any) => {
+    const utcDeliveryDate = values.deliveryDate ? values.deliveryDate.utc().format() : null;
     const supplierOrderData = {
       ...values,
+      deliveryDate: utcDeliveryDate,
       products: values.products.map((item: any) => ({
         productId: item.materialId,
         quantity: item.quantity,
@@ -104,7 +106,7 @@ export default function SupplierOrderAddForm({ onSuccess }: { onSuccess: () => v
         label="Teslim Tarihi"
         rules={[{ required: true, message: "Lütfen teslim tarihini giriniz!" }]}
       >
-        <DatePicker className="w-full" />
+        <DatePicker className="w-full" showTime />
       </Form.Item>
 
       <Form.Item>

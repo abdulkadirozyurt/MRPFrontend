@@ -1,3 +1,5 @@
+"use client";
+
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import ProductState from "../types/productTypes";
@@ -28,7 +30,7 @@ export const deleteProduct = createAsyncThunk("product/deleteProduct", async (id
   return response.data.message;
 });
 
-export const addProduct = createAsyncThunk( "product/addProduct", async (newProduct: IProduct, { rejectWithValue }) => {  
+export const addProduct = createAsyncThunk("product/addProduct", async (newProduct: IProduct, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, newProduct);
     return response.data.product;
@@ -86,7 +88,7 @@ const productSlice = createSlice({
       .addCase(addProduct.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
-        })    
+      })
 
       .addCase(updateProduct.pending, (state) => {
         state.status = "loading";

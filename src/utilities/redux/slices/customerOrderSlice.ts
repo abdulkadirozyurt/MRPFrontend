@@ -1,8 +1,10 @@
+"use client";
 
 import axios from "axios";
 import { ICustomerOrder } from "@/models/order/ICustomerOrder";
 import CustomerOrdersState from "@/utilities/redux/types/customerOrderTypes";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CUSTOMER_ORDER_ALERT_MESSAGES } from "@/utilities/constants/customer-order";
 
 const initialState: CustomerOrdersState = {
   orders: [],
@@ -14,29 +16,26 @@ const initialState: CustomerOrdersState = {
 
 // Fetch all customer orders
 export const fetchCustomerOrders = createAsyncThunk("customerOrders/fetchAll", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/customer-orders`);
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`);
   return response.data.orders;
 });
 
 // Add a customer order
-export const addCustomerOrder = createAsyncThunk(
-  "customerOrders/add",
-  async (newOrder: ICustomerOrder, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/customer-orders`, newOrder);
-      return response.data.order;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data.message || "Failed to add order");
-    }
+export const addCustomerOrder = createAsyncThunk("customerOrders/add", async (newOrder: ICustomerOrder, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`, newOrder);
+    return response.data.order;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data.message || "Failed to add order");
   }
-);
+});
 
 // Update a customer order
 export const updateCustomerOrder = createAsyncThunk(
   "customerOrders/update",
   async ({ id, updatedOrder }: { id: string; updatedOrder: Partial<ICustomerOrder> }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/customer-orders`, {
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`, {
         id,
         ...updatedOrder,
       });
@@ -48,19 +47,16 @@ export const updateCustomerOrder = createAsyncThunk(
 );
 
 // Delete a customer order
-export const deleteCustomerOrder = createAsyncThunk(
-  "customerOrders/delete",
-  async (id: string, { rejectWithValue }) => {
-    try {
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/customer-orders`, {
-        data: { id },
-      });
-      return response.data.message;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data.message || "Failed to delete order");
-    }
+export const deleteCustomerOrder = createAsyncThunk("customerOrders/delete", async (id: string, { rejectWithValue }) => {
+  try {
+    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`, {
+      data: { id },
+    });
+    return response.data.message;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data.message || "Failed to delete order");
   }
-);
+});
 
 const customerOrdersSlice = createSlice({
   name: "customerOrders",
@@ -82,11 +78,14 @@ const customerOrdersSlice = createSlice({
       })
       .addCase(fetchCustomerOrders.fulfilled, (state, action: PayloadAction<ICustomerOrder[]>) => {
         state.status = "succeeded";
+        state.alertMessage = CUSTOMER_ORDER_ALERT_MESSAGES.fetchCustomerOrdersSuccess;
+        state.alertResult = "success";
         state.orders = action.payload;
       })
       .addCase(fetchCustomerOrders.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message || "Failed to fetch orders";
+        state.error = action.error.message || CUSTOMER_ORDER_ALERT_MESSAGES.fetchCustomerOrdersError;
+        state.alertResult = "error";
       })
 
       // Add
@@ -95,14 +94,14 @@ const customerOrdersSlice = createSlice({
       })
       .addCase(addCustomerOrder.fulfilled, (state, action: PayloadAction<ICustomerOrder>) => {
         state.status = "succeeded";
-        state.alertMessage = "Sipariş başarıyla eklendi.";
+        state.alertMessage = CUSTOMER_ORDER_ALERT_MESSAGES.addCustomerOrderSuccess;
         state.alertResult = "success";
         state.orders.push(action.payload);
       })
       .addCase(addCustomerOrder.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
-        state.alertMessage = "Sipariş eklenirken hata oluştu.";
+        state.alertMessage = CUSTOMER_ORDER_ALERT_MESSAGES.addCustomerOrderError;
         state.alertResult = "error";
       })
 
@@ -112,7 +111,7 @@ const customerOrdersSlice = createSlice({
       })
       .addCase(updateCustomerOrder.fulfilled, (state, action: PayloadAction<ICustomerOrder>) => {
         state.status = "succeeded";
-        state.alertMessage = "Sipariş başarıyla güncellendi.";
+        state.alertMessage = CUSTOMER_ORDER_ALERT_MESSAGES.updateCustomerOrderSuccess;
         state.alertResult = "success";
         const index = state.orders.findIndex((order) => order._id === action.payload._id);
         if (index !== -1) {
@@ -122,7 +121,7 @@ const customerOrdersSlice = createSlice({
       .addCase(updateCustomerOrder.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
-        state.alertMessage = "Sipariş güncellenirken hata oluştu.";
+        state.alertMessage = CUSTOMER_ORDER_ALERT_MESSAGES.updateCustomerOrderError;
         state.alertResult = "error";
       })
 
@@ -132,14 +131,15 @@ const customerOrdersSlice = createSlice({
       })
       .addCase(deleteCustomerOrder.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.alertMessage = "Sipariş başarıyla silindi.";
+        state.alertMessage = CUSTOMER_ORDER_ALERT_MESSAGES.deleteCustomerOrderSuccess;
         state.alertResult = "success";
-        state.orders = state.orders.filter((order) => order._id !== action.meta.arg);
+        // state.orders = state.orders.filter((order) => order._id !== action.meta.arg);
+        state.orders = state.orders.filter((order) => order._id !== action.payload);
       })
       .addCase(deleteCustomerOrder.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
-        state.alertMessage = "Sipariş silinirken hata oluştu.";
+        state.alertMessage = CUSTOMER_ORDER_ALERT_MESSAGES.deleteCustomerOrderError;
         state.alertResult = "error";
       });
   },

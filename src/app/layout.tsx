@@ -15,7 +15,6 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const isMrpRoute = pathname.includes("/app");
-  console.log("isApplicationRoute", isMrpRoute);
 
   return (
     <html lang="en">
@@ -38,9 +37,7 @@ export default function RootLayout({
                 <div className="flex flex-col h-screen">
                   <Header />
 
-                  <div className="flex-grow flex flex-col p-8 w-full items-center justify-center">
-                    {children}
-                  </div>
+                  <div className="flex-grow flex flex-col p-8 w-full items-center justify-center">{children}</div>
 
                   <Footer />
                 </div>

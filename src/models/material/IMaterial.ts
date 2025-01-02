@@ -1,5 +1,3 @@
-import ISupplier from "../supplier/ISupplier";
-
 export default interface IMaterial {
   _id: string;
   name: string;
@@ -10,4 +8,3 @@ export default interface IMaterial {
   priceHistory: Array<{ price: number; date: Date }>;
   suppliers: Array<string>;
 }
-
