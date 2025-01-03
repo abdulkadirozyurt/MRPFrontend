@@ -24,42 +24,71 @@ const initialState: SupplierState = {
   alertResult: "",
 };
 
-export const fetchSuppliers = createAsyncThunk("supplier/fetchSuppliers", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`);
-  return response.data.suppliers;
-});
-
-export const addSupplier = createAsyncThunk("supplier/addSupplier", async (newSupplier: ISupplier, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, newSupplier);
-    return response.data.supplier;
-  } catch (error: any) {
-    return rejectWithValue(error.response.data.message || "supplier add failed");
+export const fetchSuppliers = createAsyncThunk(
+  "supplier/fetchSuppliers",
+  async () => {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`
+    );
+    return response.data.suppliers;
   }
-});
+);
 
-export const deleteSupplier = createAsyncThunk("supplier/deleteSupplier", async (id: string, { rejectWithValue }) => {
-  try {
-    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, {
-      data: { id },
-    });
-    return response.data.message;
-  } catch (error: any) {
-    return rejectWithValue(error.response.data.message || "Supplier delete failed");
+export const addSupplier = createAsyncThunk(
+  "supplier/addSupplier",
+  async (newSupplier: ISupplier, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`,
+        newSupplier
+      );
+      return response.data.supplier;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response.data.message || "supplier add failed"
+      );
+    }
   }
-});
+);
+
+export const deleteSupplier = createAsyncThunk(
+  "supplier/deleteSupplier",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`,
+        {
+          data: { id },
+        }
+      );
+      return response.data.message;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response.data.message || "Supplier delete failed"
+      );
+    }
+  }
+);
 
 export const updateSupplier = createAsyncThunk(
   "supplier/updateSupplier",
-  async ({ id, updatedSupplier }: { id: string; updatedSupplier: ISupplier }, { rejectWithValue }) => {
+  async (
+    { id, updatedSupplier }: { id: string; updatedSupplier: ISupplier },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, {
-        id,
-        ...updatedSupplier,
-      });
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`,
+        {
+          id,
+          ...updatedSupplier,
+        }
+      );
       return response.data.supplier;
     } catch (error: any) {
-      return rejectWithValue(error.response.data.message || "Supplier update failed");
+      return rejectWithValue(
+        error.response.data.message || "Supplier update failed"
+      );
     }
   }
 );
@@ -126,7 +155,9 @@ const supplierSlice = createSlice({
         state.status = "succeeded";
         state.alertMessage = alertMessages.updateSupplierSuccess;
         state.alertResult = "success";
-        state.suppliers = state.suppliers.map((supplier) => (supplier._id === action.payload._id ? action.payload : supplier));
+        state.suppliers = state.suppliers.map((supplier) =>
+          supplier._id === action.payload._id ? action.payload : supplier
+        );
       })
       .addCase(updateSupplier.rejected, (state, action) => {
         state.status = "failed";
@@ -136,7 +167,9 @@ const supplierSlice = createSlice({
       })
 
       .addMatcher(
-        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+        (action) =>
+          action.type.endsWith("/fulfilled") ||
+          action.type.endsWith("/rejected"),
         (state) => {
           setTimeout(() => {
             state.alertMessage = "";

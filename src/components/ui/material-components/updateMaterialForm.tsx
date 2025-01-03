@@ -13,7 +13,7 @@ import IMaterial from "@/models/material/IMaterial";
 
 const { Option } = Select;
 
-export default function AddMaterialForm({
+export default function UpdateMaterialForm({
   onSuccess,
 }: {
   onSuccess: () => void;

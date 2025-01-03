@@ -2,35 +2,59 @@
 
 import { updateSupplier } from "@/utilities/redux/slices/supplierSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { Button, Form, FormInstance, Input, Select } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
 import { useEffect } from "react";
+import IMaterial from "@/models/material/IMaterial";
+import ISupplier from "@/models/supplier/ISupplier";
 
-export default function SupplierUpdateForm({ onSuccess, initialValues }: { onSuccess: () => void; initialValues: any }) {
-  const [form] = Form.useForm<FormInstance>();
+export default function UpdateSupplierForm({
+  initialValues,
+  onSuccess,
+  onUpdate,
+}: {
+  initialValues: ISupplier;
+  onSuccess: () => void;
+  onUpdate: (values: ISupplier) => void;
+}) {
+  const [form] = Form.useForm();
   const dispatch: AppDispatch = useDispatch();
-  const supplierStatus = useSelector((state: RootState) => state.supplier.status);
+  const supplierStatus = useSelector(
+    (state: RootState) => state.supplier.status
+  );
   const materials = useSelector((state: RootState) => state.material.materials);
 
   useEffect(() => {
     dispatch(fetchMaterials());
-    form.setFieldsValue(initialValues);
-  }, [dispatch, initialValues]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue({
+        ...initialValues,
+        materialsOfSupplied: initialValues.materialsOfSupplied.map(
+          (material: IMaterial) => material._id
+        ),
+      });
+    }
+  }, [initialValues, form]);
 
   const onFinish = async (values: any) => {
-    try {
-      await dispatch(updateSupplier({ id: initialValues._id, updatedSupplier: values })).unwrap();
-      form.resetFields();
-      onSuccess();
-    } catch (error: any) {
-      console.error("Tedarikçi güncelleme sırasında hata oluştu:", error);
-    }
+    const updatedSupplier = {
+      ...initialValues,
+      ...values,
+    };
+    await onUpdate(updatedSupplier);
+    form.resetFields();
+    onSuccess();
   };
 
   return (
     <>
-      <h2 className="text-2xl font-bold text-center mb-6">Tedarikçi Güncelle</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">
+        Tedarikçi Güncelle
+      </h2>
       <Form
         className="flex flex-col justify-between"
         form={form}
@@ -43,7 +67,9 @@ export default function SupplierUpdateForm({ onSuccess, initialValues }: { onSuc
             <Form.Item
               name="companyName"
               label="Tedarikçi Adı"
-              rules={[{ required: true, message: "Lütfen tedarikçi adını giriniz!" }]}
+              rules={[
+                { required: true, message: "Lütfen tedarikçi adını giriniz!" },
+              ]}
             >
               <Input placeholder="Tedarikçi adını giriniz" />
             </Form.Item>
@@ -51,7 +77,9 @@ export default function SupplierUpdateForm({ onSuccess, initialValues }: { onSuc
             <Form.Item
               name="contactName"
               label="Yetkili Adı"
-              rules={[{ required: true, message: "Yetkili kişi adını giriniz!" }]}
+              rules={[
+                { required: true, message: "Yetkili kişi adını giriniz!" },
+              ]}
             >
               <Input placeholder="Yetkili adını giriniz" />
             </Form.Item>
@@ -59,29 +87,55 @@ export default function SupplierUpdateForm({ onSuccess, initialValues }: { onSuc
             <Form.Item
               name="contactTitle"
               label="Yetkili Ünvanı"
-              rules={[{ required: true, message: "Lütfen yetkili ünvanını giriniz!" }]}
+              rules={[
+                { required: true, message: "Lütfen yetkili ünvanını giriniz!" },
+              ]}
             >
               <Input placeholder="Yetkili ünvanını giriniz" />
             </Form.Item>
 
-            <Form.Item name="phone" label="Telefon" rules={[{ required: true, message: "Lütfen telefon numarasını giriniz!" }]}>
+            <Form.Item
+              name="phone"
+              label="Telefon"
+              rules={[
+                {
+                  required: true,
+                  message: "Lütfen telefon numarasını giriniz!",
+                },
+              ]}
+            >
               <Input placeholder="+90xxxxxxxxxx" />
             </Form.Item>
           </div>
           <div className="w-full md:w-3/5">
-            <Form.Item name="city" label="Şehir" rules={[{ required: true, message: "Lütfen şehri giriniz!" }]}>
+            <Form.Item
+              name="city"
+              label="Şehir"
+              rules={[{ required: true, message: "Lütfen şehri giriniz!" }]}
+            >
               <Input placeholder="Şehir giriniz" />
             </Form.Item>
 
-            <Form.Item name="country" label="Ülke" rules={[{ required: true, message: "Lütfen ülkeyi giriniz!" }]}>
+            <Form.Item
+              name="country"
+              label="Ülke"
+              rules={[{ required: true, message: "Lütfen ülkeyi giriniz!" }]}
+            >
               <Input placeholder="Ülke giriniz" />
             </Form.Item>
 
-            <Form.Item name="address" label="Adres" rules={[{ required: true, message: "Lütfen adresi giriniz!" }]}>
+            <Form.Item
+              name="address"
+              label="Adres"
+              rules={[{ required: true, message: "Lütfen adresi giriniz!" }]}
+            >
               <Input placeholder="Adres giriniz" />
             </Form.Item>
 
-            <Form.Item name="materialsOfSupplied" label="Tedarik Edilen Malzemeler">
+            <Form.Item
+              name="materialsOfSupplied"
+              label="Tedarik Edilen Malzemeler"
+            >
               <Select
                 mode="multiple"
                 placeholder="Malzemeleri Seçiniz"
@@ -89,6 +143,9 @@ export default function SupplierUpdateForm({ onSuccess, initialValues }: { onSuc
                   label: material.name,
                   value: material._id,
                 }))}
+                value={initialValues.materialsOfSupplied.map(
+                  (material: IMaterial) => material._id
+                )}
               />
             </Form.Item>
 
@@ -97,7 +154,10 @@ export default function SupplierUpdateForm({ onSuccess, initialValues }: { onSuc
               label="E-posta"
               rules={[
                 { required: true, message: "Lütfen e-posta adresini giriniz!" },
-                { type: "email", message: "Geçerli bir e-posta adresi giriniz!" },
+                {
+                  type: "email",
+                  message: "Geçerli bir e-posta adresi giriniz!",
+                },
               ]}
             >
               <Input placeholder="E-posta adresini giriniz" />
@@ -106,7 +166,12 @@ export default function SupplierUpdateForm({ onSuccess, initialValues }: { onSuc
         </div>
 
         <div className="flex items-center justify-center">
-          <Button type="primary" htmlType="submit" className="w-2/4" loading={supplierStatus === "loading"}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="w-2/4"
+            loading={supplierStatus === "loading"}
+          >
             Güncelle
           </Button>
         </div>
