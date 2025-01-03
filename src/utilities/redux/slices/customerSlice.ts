@@ -117,15 +117,15 @@ const customerSlice = createSlice({
         state.status = "failed";
       })
 
-      .addMatcher(
-        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
-        (state) => {
-          setTimeout(() => {
-            state.alertMessage = "";
-            state.alertResult = "";
-          }, 3000);
-        }
-      );
+      // .addMatcher(
+      //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+      //   (state) => {
+      //     setTimeout(() => {
+      //       state.alertMessage = "";
+      //       state.alertResult = "";
+      //     }, 3000);
+      //   }
+      // );
   },
 });
 

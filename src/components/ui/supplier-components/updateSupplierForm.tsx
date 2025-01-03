@@ -13,31 +13,27 @@ export default function UpdateSupplierForm({
   onSuccess,
   onUpdate,
 }: {
-  initialValues: ISupplier|null;
+  initialValues: ISupplier | null;
   onSuccess: () => void;
   onUpdate: (values: ISupplier) => void;
 }) {
   const [form] = Form.useForm();
   const dispatch: AppDispatch = useDispatch();
-  const supplierStatus = useSelector(
-    (state: RootState) => state.supplier.status
-  );
+  const supplierStatus = useSelector((state: RootState) => state.supplier.status);
   const materials = useSelector((state: RootState) => state.material.materials);
 
   useEffect(() => {
     dispatch(fetchMaterials());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (initialValues) {
-      form.setFieldsValue({
-        ...initialValues,
-        materialsOfSupplied: initialValues.materialsOfSupplied.map(
-          (material: IMaterial) => material._id
-        ),
-      });
-    }
-  }, [initialValues, form]);
+  // useEffect(() => {
+  //   if (initialValues) {
+  //     form.setFieldsValue({
+  //       ...initialValues,
+  //       materialsOfSupplied: initialValues.materialsOfSupplied.map((material: IMaterial) => material._id),
+  //     });
+  //   }
+  // }, [initialValues, form]);
 
   const onFinish = async (values: any) => {
     const updatedSupplier = {
@@ -51,45 +47,26 @@ export default function UpdateSupplierForm({
 
   return (
     <>
-      <h2 className="text-2xl font-bold text-center mb-6">
-        Tedarikçi Güncelle
-      </h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Tedarikçi Güncelle</h2>
       <Form
         className="flex flex-col justify-between"
         form={form}
         name="updateSupplierForm"
         layout="vertical"
         onFinish={onFinish}
+        initialValues={{ ...initialValues, materialsOfSupplied: initialValues?.materialsOfSupplied.map((material: IMaterial) => material._id) }}
       >
         <div className="container flex flex-col px-6 md:mx-auto md:px-12 md:flex-row md:justify-center md:gap-5">
           <div className="w-full md:w-3/5">
-            <Form.Item
-              name="companyName"
-              label="Tedarikçi Adı"
-              rules={[
-                { required: true, message: "Lütfen tedarikçi adını giriniz!" },
-              ]}
-            >
+            <Form.Item name="companyName" label="Tedarikçi Adı" rules={[{ required: true, message: "Lütfen tedarikçi adını giriniz!" }]}>
               <Input placeholder="Tedarikçi adını giriniz" />
             </Form.Item>
 
-            <Form.Item
-              name="contactName"
-              label="Yetkili Adı"
-              rules={[
-                { required: true, message: "Yetkili kişi adını giriniz!" },
-              ]}
-            >
+            <Form.Item name="contactName" label="Yetkili Adı" rules={[{ required: true, message: "Yetkili kişi adını giriniz!" }]}>
               <Input placeholder="Yetkili adını giriniz" />
             </Form.Item>
 
-            <Form.Item
-              name="contactTitle"
-              label="Yetkili Ünvanı"
-              rules={[
-                { required: true, message: "Lütfen yetkili ünvanını giriniz!" },
-              ]}
-            >
+            <Form.Item name="contactTitle" label="Yetkili Ünvanı" rules={[{ required: true, message: "Lütfen yetkili ünvanını giriniz!" }]}>
               <Input placeholder="Yetkili ünvanını giriniz" />
             </Form.Item>
 
@@ -107,34 +84,19 @@ export default function UpdateSupplierForm({
             </Form.Item>
           </div>
           <div className="w-full md:w-3/5">
-            <Form.Item
-              name="city"
-              label="Şehir"
-              rules={[{ required: true, message: "Lütfen şehri giriniz!" }]}
-            >
+            <Form.Item name="city" label="Şehir" rules={[{ required: true, message: "Lütfen şehri giriniz!" }]}>
               <Input placeholder="Şehir giriniz" />
             </Form.Item>
 
-            <Form.Item
-              name="country"
-              label="Ülke"
-              rules={[{ required: true, message: "Lütfen ülkeyi giriniz!" }]}
-            >
+            <Form.Item name="country" label="Ülke" rules={[{ required: true, message: "Lütfen ülkeyi giriniz!" }]}>
               <Input placeholder="Ülke giriniz" />
             </Form.Item>
 
-            <Form.Item
-              name="address"
-              label="Adres"
-              rules={[{ required: true, message: "Lütfen adresi giriniz!" }]}
-            >
+            <Form.Item name="address" label="Adres" rules={[{ required: true, message: "Lütfen adresi giriniz!" }]}>
               <Input placeholder="Adres giriniz" />
             </Form.Item>
 
-            <Form.Item
-              name="materialsOfSupplied"
-              label="Tedarik Edilen Malzemeler"
-            >
+            <Form.Item name="materialsOfSupplied" label="Tedarik Edilen Malzemeler">
               <Select
                 mode="multiple"
                 placeholder="Malzemeleri Seçiniz"
@@ -142,9 +104,7 @@ export default function UpdateSupplierForm({
                   label: material.name,
                   value: material._id,
                 }))}
-                value={initialValues?.materialsOfSupplied.map(
-                  (material: IMaterial) => material._id
-                )}
+                // value={initialValues?.materialsOfSupplied.map((material: IMaterial) => material._id)}
               />
             </Form.Item>
 
@@ -165,12 +125,7 @@ export default function UpdateSupplierForm({
         </div>
 
         <div className="flex items-center justify-center">
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="w-2/4"
-            loading={supplierStatus === "loading"}
-          >
+          <Button type="primary" htmlType="submit" className="w-2/4" loading={supplierStatus === "loading"}>
             Güncelle
           </Button>
         </div>

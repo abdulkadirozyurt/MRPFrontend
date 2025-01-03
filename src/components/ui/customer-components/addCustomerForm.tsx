@@ -30,13 +30,19 @@ export default function CustomerAddForm({ onSuccess }: { onSuccess: () => void }
       <Form.Item name="contactTitle" label="Yetkili Ünvanı" rules={[{ required: true, message: "Zorunlu alan" }]}>
         <Input />
       </Form.Item>
-
       <Form.Item name="email" label="E-posta" rules={[{ required: true, type: "email", message: "Geçerli bir e-posta girin" }]}>
         <Input />
       </Form.Item>
       <Form.Item name="phone" label="Telefon" rules={[{ required: true, message: "Zorunlu alan" }]}>
         <Input />
       </Form.Item>
+      <Form.Item name="taxNumber" label="Vergi Numarası">
+        <Input />
+      </Form.Item>
+      <Form.Item name="postalCode" label="Posta Kodu">
+        <Input />
+      </Form.Item>
+
       <Form.Item name="city" label="Şehir" rules={[{ required: true, message: "Zorunlu alan" }]}>
         <Input />
       </Form.Item>

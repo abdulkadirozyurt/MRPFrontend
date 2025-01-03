@@ -24,7 +24,7 @@ export default function AddMaterialForm({
     (state: RootState) => state.supplier.status
   );
   const suppliers = useSelector((state: RootState) => state.supplier.suppliers);
-  const [selectedSupplierIds, setSelectedSupplierIds] = useState<string[]>([]);
+  // const [selectedSupplierIds, setSelectedSupplierIds] = useState<string[]>([]);
 
   const onFinish = async (values: any) => {
     try {

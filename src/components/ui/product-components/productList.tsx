@@ -5,7 +5,7 @@ import { IProduct } from "@/models/product/IProduct";
 import { deleteProduct, fetchProducts } from "@/utilities/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Modal, Space, Table, TableColumnsType, Tag } from "antd";
+import { Badge, Button, Input, Modal, Space, Table, TableColumnsType, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddProductForm from "./addProductForm";
@@ -21,9 +21,7 @@ export default function ProductList() {
   const alertMessage = useSelector((state: RootState) => state.product.alertMessage);
   const loading = status === "loading";
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredProducts = products?.filter((product) => product?.name.toLowerCase().includes(searchText.toLowerCase()));
 
   const columns: TableColumnsType<IProduct> = [
     {
@@ -50,23 +48,18 @@ export default function ProductList() {
       key: "billOfMaterials",
       render: (billOfMaterials) => (
         <>
-          {billOfMaterials &&
+          {/* {billOfMaterials &&
             billOfMaterials.map((bom: any) => (
               <div>
-                <Tag key={bom.materialId}>{bom.materialId.name} </Tag>{" "}
-                <Tag key={bom.materialId}>{bom.quantity} </Tag>
+                <Tag key={bom._id}>{bom.materialId.name} </Tag> <Tag key={bom._id}>{bom.quantity} </Tag>
               </div>
-            ))}
+            ))} */}
 
-          {/* <Space>
-            {...billOfMaterials.map((bom) => (
-              <Badge
-                key={bom._id}
-                count={bom.quantity}
-                style={{ backgroundColor: "grey", marginRight: "1px" }}
-              />
+          <Space>
+            {...billOfMaterials.map((bom: any) => (
+              <Badge key={bom._id} count={bom.quantity} style={{ backgroundColor: "grey", marginRight: "1px" }} />
             ))}
-          </Space> */}
+          </Space>
         </>
       ),
     },
@@ -118,34 +111,16 @@ export default function ProductList() {
       {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
 
       <div className="flex items-center justify-between h-14">
-        <Input
-          className=" !w-72"
-          value={searchText}
-          onChange={handleSearch}
-          prefix={<SearchOutlined />}
-          placeholder="Ara"
-        />
+        <Input className=" !w-72" value={searchText} onChange={handleSearch} prefix={<SearchOutlined />} placeholder="Ara" />
 
         <Button type="primary" onClick={showModal} className="!m-5">
           Yeni Ürün Ekle
         </Button>
-        <Modal
-          open={isModalVisible}
-          okType="primary"
-          onCancel={() => setIsModalVisible(false)}
-          footer={null}
-          className="!w-4/6"
-        >
+        <Modal open={isModalVisible} okType="primary" onCancel={() => setIsModalVisible(false)} footer={null} className="!w-4/6">
           <AddProductForm onSuccess={handleModalClose} />
         </Modal>
       </div>
-      <Table
-        rowKey="_id"
-        loading={loading}
-        columns={columns}
-        dataSource={filteredProducts}
-        pagination={{ pageSize: 10 }}
-      />
+      <Table rowKey="_id" loading={loading} columns={columns} dataSource={filteredProducts} pagination={{ pageSize: 10 }} />
     </>
   );
 }

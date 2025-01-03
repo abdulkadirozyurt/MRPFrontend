@@ -24,16 +24,15 @@ export default function SupplierList() {
 
   const loading = status === "loading";
 
-  const filteredSuppliers = suppliers.filter(
-    (supplier) => supplier && supplier.companyName && supplier.companyName.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredSuppliers = suppliers.filter((supplier) => supplier && supplier.companyName && supplier.companyName.toLowerCase().includes(searchText.toLowerCase()));
 
   const showModal = (mode: "add" | "edit", supplier?: ISupplier) => {
     setMode(mode);
     setIsModalVisible(true);
-    if (mode === "edit" && supplier) {
-      setEditingSupplier(supplier);
-    }
+    // if (mode === "edit" && supplier) {
+    //   setEditingSupplier(supplier);
+    // }
+    setEditingSupplier(supplier || null);
   };
 
   const handleModalClose = () => {
@@ -176,11 +175,7 @@ export default function SupplierList() {
       <Table rowKey="_id" loading={loading} columns={columns} dataSource={filteredSuppliers} pagination={{ pageSize: 10 }} />
 
       <Modal open={isModalVisible} onCancel={handleModalClose} footer={null} className="!w-4/6">
-        {mode === "add" ? (
-          <SupplierAddForm onSuccess={handleModalClose} />
-        ) : (
-          <SupplierUpdateForm initialValues={editingSupplier || null} onSuccess={handleModalClose} onUpdate={handleUpdate} />
-        )}
+        {mode === "add" ? <SupplierAddForm onSuccess={handleModalClose} /> : <SupplierUpdateForm initialValues={editingSupplier || null} onSuccess={handleModalClose} onUpdate={handleUpdate} />}
       </Modal>
     </>
   );

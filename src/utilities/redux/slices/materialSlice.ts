@@ -10,6 +10,10 @@ const alertMessages = {
   addMaterialError: "Malzeme eklenirken bir hata oluştu!",
   fetchMaterialsSuccess: "Malzemeler listelendi.",
   fetchMaterialsError: "Malzemeler listelenirken hata oluştu!",
+  deleteMaterialSuccess: "Malzeme başarıyla silindi.",
+  deleteMaterialError: "Malzeme silinirken bir hata oluştu!",
+  updateMaterialSuccess: "Malzeme başarıyla güncellendi.",
+  updateMaterialError: "Malzeme güncellenirken bir hata oluştu!",
 };
 
 const initialState: MaterialState = {
@@ -31,6 +35,24 @@ export const addMaterial = createAsyncThunk("material/addMaterial", async (newMa
     return response.data.material;
   } catch (error: any) {
     return rejectWithValue(error.response.data.message || "material add failed");
+  }
+});
+
+export const deleteMaterial = createAsyncThunk("material/deleteMaterial", async (id: string, { rejectWithValue }) => {
+  try {
+    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, { data: { id } });
+    return response.data.message;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data.message || "material delete failed");
+  }
+});
+
+export const updateMaterial = createAsyncThunk("material/updateMaterial", async ({ id, updatedMaterial }: { id: string, updatedMaterial: IMaterial }, { rejectWithValue }) => {
+  try {
+    const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, { id, ...updatedMaterial });
+    return response.data.material;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data.message || "material update failed");
   }
 });
 
@@ -82,16 +104,45 @@ const materialSlice = createSlice({
         state.alertResult = "error";
         state.error = (action.payload as string) || "failed to add material";
       })
+      .addCase(deleteMaterial.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteMaterial.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.alertMessage = alertMessages.deleteMaterialSuccess;
+        state.alertResult = "success";
+        state.materials = state.materials.filter((material) => material._id !== action.payload);
+      })
+      .addCase(deleteMaterial.rejected, (state, action) => {
+        state.status = "failed";
+        state.alertMessage = alertMessages.deleteMaterialError || "failed to delete material";
+        state.alertResult = "error";
+      })
+      .addCase(updateMaterial.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateMaterial.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.alertMessage = alertMessages.updateMaterialSuccess;
+        state.alertResult = "success";
+        state.materials = state.materials.map((material) => (material._id === action.payload._id ? action.payload : material));
+      })
+      .addCase(updateMaterial.rejected, (state, action) => {
+        state.status = "failed";
+        state.alertMessage = alertMessages.updateMaterialError;
+        state.alertResult = "error";
+        state.error = (action.payload as string) || "failed to update material";
+      });
 
-      .addMatcher(
-        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
-        (state) => {
-          setTimeout(() => {
-            state.alertMessage = "";
-            state.alertResult = "";
-          }, 3000);
-        }
-      );
+      // .addMatcher(
+      //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+      //   (state) => {
+      //     setTimeout(() => {
+      //       state.alertMessage = "";
+      //       state.alertResult = "";
+      //     }, 3000);
+      //   }
+      // );
   },
 });
 

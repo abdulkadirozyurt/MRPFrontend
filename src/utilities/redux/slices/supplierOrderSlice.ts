@@ -70,15 +70,15 @@ const supplierOrderSlice = createSlice({
       })
 
       // Diğer matcher'lar (Fulfilled & Rejected genel durumları)
-      .addMatcher(
-        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
-        (state) => {
-          setTimeout(() => {
-            state.alertMessage = "";
-            state.alertResult = "";
-          }, 3000);
-        }
-      );
+      // .addMatcher(
+      //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+      //   (state) => {
+      //     setTimeout(() => {
+      //       state.alertMessage = "";
+      //       state.alertResult = "";
+      //     }, 3000);
+      //   }
+      // );
   },
 });
 

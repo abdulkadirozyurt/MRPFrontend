@@ -1,40 +1,49 @@
 "use client";
 
+import IMaterial from "@/models/material/IMaterial";
+import ISupplier from "@/models/supplier/ISupplier";
+import { ENTRY_TYPES, UNIT_TYPES } from "@/utilities/constants/material";
+import { updateMaterial } from "@/utilities/redux/slices/materialSlice";
+import { fetchSuppliers } from "@/utilities/redux/slices/supplierSlice";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { Button, Form, Input, InputNumber, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Multiselect from "@/components/common/Multiselect";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { addMaterial } from "@/utilities/redux/slices/materialSlice";
-import { fetchSuppliers } from "@/utilities/redux/slices/supplierSlice";
-import { ENTRY_TYPES, UNIT_TYPES } from "@/utilities/constants/material";
-import { Button, Form, FormInstance, Input, InputNumber, Select } from "antd";
-import ISupplier from "@/models/supplier/ISupplier";
-import IMaterial from "@/models/material/IMaterial";
 
 const { Option } = Select;
 
 export default function UpdateMaterialForm({
+  initialValues,
   onSuccess,
+  onUpdate,
 }: {
+  initialValues: IMaterial | null;
   onSuccess: () => void;
+  onUpdate: (values: IMaterial) => void;
 }) {
   const [form] = Form.useForm<IMaterial>();
   const dispatch: AppDispatch = useDispatch();
-  const materialStatus = useSelector(
-    (state: RootState) => state.supplier.status
-  );
+  const materialStatus = useSelector((state: RootState) => state.supplier.status);
   const suppliers = useSelector((state: RootState) => state.supplier.suppliers);
   const [selectedSupplierIds, setSelectedSupplierIds] = useState<string[]>([]);
 
   const onFinish = async (values: any) => {
+    const updatedMaterial = {
+      ...initialValues,
+      ...values,
+    };
+    console.log("updatedMaterial", updatedMaterial);
+    
     try {
-      await dispatch(addMaterial(values)).unwrap();
+      await onUpdate(updatedMaterial);
       form.resetFields();
       onSuccess();
     } catch (error: any) {
-      console.error("Malzeme ekleme hatası:", error);
+      console.log("eeerr", error);
     }
   };
+
+  
 
   useEffect(() => {
     dispatch(fetchSuppliers());
@@ -49,16 +58,14 @@ export default function UpdateMaterialForm({
         name="addMaterialForm"
         layout="vertical"
         onFinish={onFinish}
+        initialValues={{
+          ...initialValues,
+          suppliers: initialValues?.suppliers?.map((supplier: ISupplier) => supplier._id) || [],
+        }}
       >
         <div className="container flex flex-col px-6 md:mx-auto md:px-12 md:flex-row md:justify-center md:gap-5">
           <div className="w-full md:w-2/5">
-            <Form.Item
-              name="name"
-              label="Malzeme Adı"
-              rules={[
-                { required: true, message: "Lütfen malzeme adını giriniz!" },
-              ]}
-            >
+            <Form.Item name="name" label="Malzeme Adı" rules={[{ required: true, message: "Lütfen malzeme adını giriniz!" }]}>
               <Input placeholder="Malzeme adını giriniz" />
             </Form.Item>
 
@@ -74,11 +81,7 @@ export default function UpdateMaterialForm({
                 },
               ]}
             >
-              <InputNumber
-                min={0}
-                placeholder="Stok miktarını giriniz"
-                className="!w-full"
-              />
+              <InputNumber min={0} placeholder="Stok miktarını giriniz" className="!w-full" />
             </Form.Item>
 
             <Form.Item
@@ -98,34 +101,21 @@ export default function UpdateMaterialForm({
                   label: supplier.companyName,
                   value: supplier._id,
                 }))}
+                value={initialValues?.suppliers.map((supplier: ISupplier) => supplier._id)}
               />
             </Form.Item>
           </div>
 
           <div className="w-full md:w-2/5">
             <div className="flex flex-row gap-2">
-              <Form.Item
-                name="unitType"
-                label="Birim Türü"
-                rules={[
-                  { required: true, message: "Lütfen birim türünü seçiniz!" },
-                ]}
-                className="w-32"
-              >
+              <Form.Item name="unitType" label="Birim Türü" rules={[{ required: true, message: "Lütfen birim türünü seçiniz!" }]} className="w-32">
                 <Select placeholder="Seçiniz">
                   {UNIT_TYPES.map((type) => (
                     <Option key={type.key}>{type.label}</Option>
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item
-                name="entryType"
-                label="Giriş Türü"
-                className="w-32"
-                rules={[
-                  { required: true, message: "Lütfen giriş türünü seçiniz!" },
-                ]}
-              >
+              <Form.Item name="entryType" label="Giriş Türü" className="w-32" rules={[{ required: true, message: "Lütfen giriş türünü seçiniz!" }]}>
                 <Select placeholder="Seçiniz">
                   {ENTRY_TYPES.map((type) => (
                     <Option key={type.key}>{type.label}</Option>
@@ -147,11 +137,7 @@ export default function UpdateMaterialForm({
                 },
               ]}
             >
-              <InputNumber
-                min={0}
-                placeholder="Fiyatı giriniz"
-                className="!w-full"
-              />
+              <InputNumber min={0} placeholder="Fiyatı giriniz" className="!w-full" />
             </Form.Item>
 
             <Form.Item
@@ -164,23 +150,14 @@ export default function UpdateMaterialForm({
                 },
               ]}
             >
-              <InputNumber
-                min={0}
-                placeholder="Yeniden sipariş seviyesini giriniz"
-                className="!w-full"
-              />
+              <InputNumber min={0} placeholder="Yeniden sipariş seviyesini giriniz" className="!w-full" />
             </Form.Item>
           </div>
         </div>
 
         <div className="flex items-center justify-center">
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="w-1/2"
-            loading={materialStatus === "loading"}
-          >
-            Ekle
+          <Button type="primary" htmlType="submit" className="w-1/2" loading={materialStatus === "loading"}>
+            Güncelle
           </Button>
         </div>
       </Form>

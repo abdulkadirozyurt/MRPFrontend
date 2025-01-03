@@ -1,20 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Message from "@/components/common/Message";
-import { SearchOutlined } from "@ant-design/icons";
 import IMaterial from "@/models/material/IMaterial";
 import ISupplier from "@/models/supplier/ISupplier";
-import { useDispatch, useSelector } from "react-redux";
+import { deleteMaterial, fetchMaterials, updateMaterial } from "@/utilities/redux/slices/materialSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
-import { Badge, Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Modal, Space, Table, TableColumnsType, Tag } from "antd";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AddMaterialForm from "./addMaterialForm";
+import UpdateMaterialForm from "./updateMaterialForm";
 
 export default function MaterialList() {
   const dispatch: AppDispatch = useDispatch();
+  const [mode, setMode] = useState<"add" | "edit">("add");
   const [searchText, setSearchText] = useState<string>("");
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [editingMaterial, setEditingMaterial] = useState<IMaterial | null>(null);
   const status = useSelector((state: RootState) => state.material.status);
   const alertResult = useSelector((state: RootState) => state.material.alertResult);
   const alertMessage = useSelector((state: RootState) => state.material.alertMessage);
@@ -26,12 +29,15 @@ export default function MaterialList() {
     (material) => material && material.name && material.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const showModal = () => {
+  const showModal = (mode: "add" | "edit", material?: IMaterial) => {
+    setMode(mode);
     setIsModalVisible(true);
+    setEditingMaterial(material || null);
   };
 
   const handleModalClose = () => {
     setIsModalVisible(false);
+    setEditingMaterial(null);
     dispatch(fetchMaterials());
   };
 
@@ -39,12 +45,21 @@ export default function MaterialList() {
     setSearchText(e.target.value);
   };
 
-  const handleEdit = (record: IMaterial) => {
-    console.log("Düzenlenecek Malzeme:", record);
+  const handleDelete = async (id: string) => {
+    try {
+      await dispatch(deleteMaterial(id)).unwrap();
+      dispatch(fetchMaterials());
+    } catch (error) {}
   };
 
-  const handleDelete = (id: string) => {
-    console.log("Silinecek Malzeme ID:", id);
+  const handleEdit = async (updatedMaterial: IMaterial) => {
+    try {
+      console.log("Güncellenen Malzeme:", updatedMaterial);
+      await dispatch(updateMaterial({ id: updatedMaterial._id, updatedMaterial })).unwrap();
+      handleModalClose();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const columns: TableColumnsType<IMaterial> = [
@@ -64,31 +79,7 @@ export default function MaterialList() {
       align: "center",
       className: "",
       render: (suppliers: ISupplier[]) => (
-        // <Space>
-        //   <Select
-        //     className="!text-red-500"
-        //     mode="multiple"
-        //     disabled
-        //     // style={{ width: "100%" }}
-        //     defaultValue={[...suppliers.map((supplier) => supplier.name)]}
-        //   />
-        // </Space>
-
-        // <Badge
-        // text={suppliers.map((supplier) => supplier.name)}
-        // count={suppliers.length}
-        // style={{ backgroundColor: '#52c41a' }}
-        // >
-
-        <Space>
-          {...suppliers.map((supplier: ISupplier) => (
-            <Badge
-              key={supplier._id}
-              count={supplier.companyName}
-              style={{ backgroundColor: "grey", marginRight: "1px" }}
-            />
-          ))}
-        </Space>
+        <Space>{...suppliers.map((supplier: ISupplier) => <Tag key={supplier._id}>{supplier.companyName}</Tag>)}</Space>
       ),
     },
     {
@@ -110,8 +101,7 @@ export default function MaterialList() {
       key: "price",
       align: "center",
 
-      render: (price: number | undefined) =>
-        typeof price === "number" ? `${price.toFixed(2)} ₺` : "Belirtilmedi",
+      render: (price: number | undefined) => (typeof price === "number" ? `${price.toFixed(2)} ₺` : "Belirtilmedi"),
     },
     {
       title: "Yeniden Sipariş Seviyesi",
@@ -126,7 +116,7 @@ export default function MaterialList() {
 
       render: (_: any, record: IMaterial) => (
         <Space size="middle">
-          <Button type="link" onClick={() => handleEdit(record)}>
+          <Button type="link" onClick={() => showModal("edit", record)}>
             Düzenle
           </Button>
           <Button type="link" danger onClick={() => handleDelete(record._id)}>
@@ -146,34 +136,21 @@ export default function MaterialList() {
       {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
 
       <div className="flex items-center justify-between h-14">
-        <Input
-          className=" !w-72"
-          value={searchText}
-          onChange={handleSearch}
-          prefix={<SearchOutlined />}
-          placeholder="Ara"
-        />
+        <Input className=" !w-72" value={searchText} onChange={handleSearch} prefix={<SearchOutlined />} placeholder="Ara" />
 
-        <Button type="primary" onClick={showModal} className="!m-5">
+        <Button type="primary" onClick={() => showModal("add")} className="!m-5">
           Yeni Malzeme Ekle
         </Button>
-        <Modal
-          open={isModalVisible}
-          okType="primary"
-          onCancel={() => setIsModalVisible(false)}
-          footer={null}
-          className="!w-4/6"
-        >
-          <AddMaterialForm onSuccess={handleModalClose} />
-        </Modal>
       </div>
-      <Table
-        rowKey="_id"
-        loading={loading}
-        columns={columns}
-        dataSource={filteredMaterials}
-        pagination={{ pageSize: 8 }}
-      />
+      <Table rowKey="_id" loading={loading} columns={columns} dataSource={filteredMaterials} pagination={{ pageSize: 8 }} />
+
+      <Modal open={isModalVisible} onCancel={handleModalClose} footer={null} className="!w-4/6">
+        {mode === "add" ? (
+          <AddMaterialForm onSuccess={handleModalClose} />
+        ) : (
+          <UpdateMaterialForm initialValues={editingMaterial || null} onSuccess={handleModalClose} onUpdate={handleEdit} />
+        )}
+      </Modal>
     </>
   );
 }

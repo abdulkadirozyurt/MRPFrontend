@@ -1,26 +1,43 @@
 "use client";
 
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/utilities/redux/store";
-import { updateCustomer } from "@/utilities/redux/slices/customerSlice";
+import ICustomer from "@/models/customer/ICustomer";
 import { Button, Form, Input } from "antd";
+import { useEffect } from "react";
 
-export default function UpdateCustomerForm({ initialValues, onSuccess }: { initialValues: any; onSuccess: () => void }) {
-  const dispatch = useDispatch<AppDispatch>();
-  const [form] = Form.useForm();
+export default function UpdateCustomerForm({
+  initialValues,
+  onSuccess,
+  onUpdate,
+}: {
+  initialValues: ICustomer | null;
+  onSuccess: () => void;
+  onUpdate: (values: ICustomer) => void;
+}) {
+  // const dispatch = useDispatch<AppDispatch>();
+  const [form] = Form.useForm<ICustomer>();
 
   const onFinish = async (values: any) => {
+    const updatedCustomer = {
+      ...initialValues,
+      ...values,
+    };
     try {
-      await dispatch(updateCustomer({ id: initialValues._id, updatedCustomer: values })).unwrap();
-      form.resetFields();
+      await onUpdate(updatedCustomer);
+      // form.resetFields();
       onSuccess();
     } catch (error) {
       console.error("Müşteri güncellenirken hata oluştu:", error);
     }
   };
 
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+    }
+  }, [initialValues, form]);
+
   return (
-    <Form form={form} initialValues={initialValues} onFinish={onFinish} layout="horizontal">
+    <Form form={form} initialValues={initialValues || {}} onFinish={onFinish} layout="horizontal">
       <Form.Item name="companyName" label="Şirket Adı" rules={[{ required: true, message: "Zorunlu alan" }]}>
         <Input />
       </Form.Item>
@@ -34,6 +51,12 @@ export default function UpdateCustomerForm({ initialValues, onSuccess }: { initi
         <Input />
       </Form.Item>
       <Form.Item name="phone" label="Telefon" rules={[{ required: true, message: "Zorunlu alan" }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item name="taxNumber" label="Vergi Numarası">
+        <Input />
+      </Form.Item>
+      <Form.Item name="postalCode" label="Posta Kodu">
         <Input />
       </Form.Item>
       <Form.Item name="city" label="Şehir" rules={[{ required: true, message: "Zorunlu alan" }]}>

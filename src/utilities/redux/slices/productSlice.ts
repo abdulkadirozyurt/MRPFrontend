@@ -8,6 +8,10 @@ import { IProduct } from "@/models/product/IProduct";
 const alertMessages = {
   fetchProductsSuccess: "Ürünler listelendi.",
   fetchProductsError: "Ürünler listelenirken hata oluştu!",
+  deleteProductSuccess: "Ürün başarıyla silindi.",
+  deleteProductError: "Ürün silinirken hata oluştu!",
+  updateProductSuccess: "Ürün başarıyla güncellendi.",
+  updateProductError: "Ürün güncellenirken hata oluştu!",
 };
 
 const initialState: ProductState = {
@@ -23,13 +27,6 @@ export const fetchProducts = createAsyncThunk("product/fetchProducts", async () 
   return response.data.products;
 });
 
-export const deleteProduct = createAsyncThunk("product/deleteProduct", async (id: string) => {
-  const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/products/`, {
-    data: { id },
-  });
-  return response.data.message;
-});
-
 export const addProduct = createAsyncThunk("product/addProduct", async (newProduct: IProduct, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, newProduct);
@@ -39,14 +36,28 @@ export const addProduct = createAsyncThunk("product/addProduct", async (newProdu
   }
 });
 
-export const updateProduct = createAsyncThunk("product/updateProduct", async (updatedProduct: IProduct, { rejectWithValue }) => {
+export const deleteProduct = createAsyncThunk("product/deleteProduct", async (id: string, { rejectWithValue }) => {
   try {
-    const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, updatedProduct);
-    return response.data.product;
+    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/products/`, {
+      data: { id },
+    });
+    return response.data.message;
   } catch (error: any) {
-    return rejectWithValue(error.response.data.message || "Ürün güncelleme başarısız oldu.");
+    return rejectWithValue(error.response.data.message || "Ürün silme başarısız oldu.");
   }
 });
+
+export const updateProduct = createAsyncThunk(
+  "product/updateProduct",
+  async ({ id, updatedProduct }: { id: string; updatedProduct: IProduct }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, { id, ...updatedProduct });
+      return response.data.product;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.message || "Ürün güncelleme başarısız oldu.");
+    }
+  }
+);
 
 const productSlice = createSlice({
   name: "product",
@@ -110,22 +121,25 @@ const productSlice = createSlice({
 
       .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<string>) => {
         state.products = state.products.filter((product) => product._id !== action.payload);
+        state.alertMessage = alertMessages.deleteProductSuccess;
+        state.alertResult = "success";
+        state.status = "succeeded";
       })
 
       .addCase(deleteProduct.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
-      })
+      });
 
-      .addMatcher(
-        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
-        (state) => {
-          setTimeout(() => {
-            state.alertMessage = "";
-            state.alertResult = "";
-          }, 3000);
-        }
-      );
+    // .addMatcher(
+    //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+    //   (state) => {
+    //     setTimeout(() => {
+    //       state.alertMessage = "";
+    //       state.alertResult = "";
+    //     }, 3000);
+    //   }
+    // );
   },
 });
 
