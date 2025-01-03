@@ -2,11 +2,7 @@
 
 import Message from "@/components/common/Message";
 import ISupplier from "@/models/supplier/ISupplier";
-import {
-  deleteSupplier,
-  fetchSuppliers,
-  updateSupplier,
-} from "@/utilities/redux/slices/supplierSlice";
+import { deleteSupplier, fetchSuppliers, updateSupplier } from "@/utilities/redux/slices/supplierSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
@@ -21,26 +17,15 @@ export default function SupplierList() {
   const [searchText, setSearchText] = useState<string>("");
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const status = useSelector((state: RootState) => state.supplier.status);
-  const [editingSupplier, setEditingSupplier] = useState<ISupplier | null>(
-    null
-  );
-  const alertResult = useSelector(
-    (state: RootState) => state.supplier.alertResult
-  );
-  const alertMessage = useSelector(
-    (state: RootState) => state.supplier.alertMessage
-  );
-  const suppliers: ISupplier[] = useSelector(
-    (state: RootState) => state.supplier.suppliers
-  );
+  const [editingSupplier, setEditingSupplier] = useState<ISupplier | null>(null);
+  const alertResult = useSelector((state: RootState) => state.supplier.alertResult);
+  const alertMessage = useSelector((state: RootState) => state.supplier.alertMessage);
+  const suppliers: ISupplier[] = useSelector((state: RootState) => state.supplier.suppliers);
 
   const loading = status === "loading";
 
   const filteredSuppliers = suppliers.filter(
-    (supplier) =>
-      supplier &&
-      supplier.companyName &&
-      supplier.companyName.toLowerCase().includes(searchText.toLowerCase())
+    (supplier) => supplier && supplier.companyName && supplier.companyName.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const showModal = (mode: "add" | "edit", supplier?: ISupplier) => {
@@ -70,9 +55,7 @@ export default function SupplierList() {
 
   const handleUpdate = async (updatedSupplier: ISupplier) => {
     try {
-      await dispatch(
-        updateSupplier({ id: updatedSupplier._id, updatedSupplier })
-      ).unwrap();
+      await dispatch(updateSupplier({ id: updatedSupplier._id, updatedSupplier })).unwrap();
       handleModalClose();
     } catch (error: any) {
       console.log(error);
@@ -166,11 +149,7 @@ export default function SupplierList() {
           <Button type="primary" onClick={() => showModal("edit", record)}>
             Düzenle
           </Button>
-          <Button
-            type="primary"
-            danger
-            onClick={() => handleDelete(record._id)}
-          >
+          <Button type="primary" danger onClick={() => handleDelete(record._id)}>
             Sil
           </Button>
         </Space>
@@ -184,46 +163,23 @@ export default function SupplierList() {
 
   return (
     <>
-      {alertMessage && alertResult && (
-        <Message result={alertResult} alertMessage={alertMessage} />
-      )}
+      {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
 
       <div className="flex items-center justify-between h-14">
-        <Input
-          className="!w-72"
-          value={searchText}
-          onChange={handleSearch}
-          prefix={<SearchOutlined />}
-          placeholder="Ara"
-        />
+        <Input className="!w-72" value={searchText} onChange={handleSearch} prefix={<SearchOutlined />} placeholder="Ara" />
 
         <Button type="primary" onClick={() => showModal("add")}>
           Yeni Tedarikçi Ekle
         </Button>
       </div>
 
-      <Table
-        rowKey="_id"
-        loading={loading}
-        columns={columns}
-        dataSource={filteredSuppliers}
-        pagination={{ pageSize: 10 }}
-      />
+      <Table rowKey="_id" loading={loading} columns={columns} dataSource={filteredSuppliers} pagination={{ pageSize: 10 }} />
 
-      <Modal
-        open={isModalVisible}
-        onCancel={handleModalClose}
-        footer={null}
-        className="!w-4/6"
-      >
+      <Modal open={isModalVisible} onCancel={handleModalClose} footer={null} className="!w-4/6">
         {mode === "add" ? (
           <SupplierAddForm onSuccess={handleModalClose} />
         ) : (
-          <SupplierUpdateForm
-            initialValues={editingSupplier || {}}
-            onSuccess={handleModalClose}
-            onUpdate={handleUpdate}
-          />
+          <SupplierUpdateForm initialValues={editingSupplier || null} onSuccess={handleModalClose} onUpdate={handleUpdate} />
         )}
       </Modal>
     </>

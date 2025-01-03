@@ -1,20 +1,19 @@
 "use client";
 
-import { updateSupplier } from "@/utilities/redux/slices/supplierSlice";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
-import { Button, Form, Input, Select } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
-import { useEffect } from "react";
 import IMaterial from "@/models/material/IMaterial";
 import ISupplier from "@/models/supplier/ISupplier";
+import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { Button, Form, Input, Select } from "antd";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function UpdateSupplierForm({
   initialValues,
   onSuccess,
   onUpdate,
 }: {
-  initialValues: ISupplier;
+  initialValues: ISupplier|null;
   onSuccess: () => void;
   onUpdate: (values: ISupplier) => void;
 }) {
@@ -143,7 +142,7 @@ export default function UpdateSupplierForm({
                   label: material.name,
                   value: material._id,
                 }))}
-                value={initialValues.materialsOfSupplied.map(
+                value={initialValues?.materialsOfSupplied.map(
                   (material: IMaterial) => material._id
                 )}
               />
