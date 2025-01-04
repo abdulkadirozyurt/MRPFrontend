@@ -68,9 +68,12 @@ export default function UpdateCustomerForm({
       <Form.Item name="address" label="Adres" rules={[{ required: true, message: "Zorunlu alan" }]}>
         <Input.TextArea />
       </Form.Item>
-      <Button type="primary" htmlType="submit">
-        Güncelle
-      </Button>
+
+      <div className="flex items-center justify-center">
+        <Button type="primary" htmlType="submit" className="w-1/2">
+          Güncelle
+        </Button>
+      </div>
     </Form>
   );
 }

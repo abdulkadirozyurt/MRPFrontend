@@ -5,7 +5,7 @@ import ICustomer from "@/models/customer/ICustomer";
 import { deleteCustomer, fetchCustomers, updateCustomer } from "@/utilities/redux/slices/customerSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Space, Table, TableColumnsType } from "antd";
+import { Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddCustomerForm from "./addCustomerForm";
@@ -13,18 +13,16 @@ import UpdateCustomerForm from "./updateCustomerForm";
 
 export default function CustomerList() {
   const [searchText, setSearchText] = useState<string>("");
+  const [mode, setMode] = useState<"add" | "update">("add");
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editingCustomer, setEditingCustomer] = useState<ICustomer | null>(null);
-  const [mode, setMode] = useState<"add" | "update">("add");
+
   const dispatch = useDispatch<AppDispatch>();
-  const customers = useSelector((state: RootState) => state.customer.customers);
   const status = useSelector((state: RootState) => state.customer.status);
+  const customers = useSelector((state: RootState) => state.customer.customers);
   const alertResult = useSelector((state: RootState) => state.customer.alertResult);
   const alertMessage = useSelector((state: RootState) => state.customer.alertMessage);
-
-  useEffect(() => {
-    dispatch(fetchCustomers());
-  }, [dispatch]);
+  const loading = status === "loading";
 
   const handleSearch = (e: any) => {
     setSearchText(e.target.value.toLowerCase());
@@ -41,8 +39,6 @@ export default function CustomerList() {
   const handleModalClose = () => {
     setIsModalVisible(false);
     setEditingCustomer(null);
-    console.log(editingCustomer);
-
     dispatch(fetchCustomers());
   };
 
@@ -91,6 +87,10 @@ export default function CustomerList() {
     },
   ];
 
+  useEffect(() => {
+    dispatch(fetchCustomers());
+  }, [dispatch]);
+
   return (
     <>
       {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
@@ -100,7 +100,7 @@ export default function CustomerList() {
           Yeni Müşteri Ekle
         </Button>
       </div>
-      <Table dataSource={filteredCustomers} columns={columns} loading={status === "loading"} rowKey="_id" pagination={{ pageSize: 10 }} />
+      <Table dataSource={filteredCustomers} columns={columns} loading={loading} rowKey="_id" pagination={{ pageSize: 10 }} />
 
       <Modal className="!w-4/6" open={isModalVisible} onCancel={handleModalClose} footer={null}>
         {mode === "add" ? (

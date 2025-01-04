@@ -22,10 +22,6 @@ export default function UpdateSupplierForm({
   const supplierStatus = useSelector((state: RootState) => state.supplier.status);
   const materials = useSelector((state: RootState) => state.material.materials);
 
-  useEffect(() => {
-    dispatch(fetchMaterials());
-  }, [dispatch]);
-
   const onFinish = async (values: any) => {
     const updatedSupplier = { ...initialValues, ...values };
     await onUpdate(updatedSupplier);
@@ -34,8 +30,14 @@ export default function UpdateSupplierForm({
   };
 
   useEffect(() => {
+    console.log("initialValues---> ", initialValues);
+    
     form.resetFields();
   }, [initialValues]);
+
+  useEffect(() => {
+    dispatch(fetchMaterials());
+  }, [dispatch]);
 
   return (
     <>
