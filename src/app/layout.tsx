@@ -8,7 +8,6 @@ import Footer from "@/components/landing-layout-components/Footer";
 import Header from "@/components/landing-layout-components/Header";
 import { usePathname } from "next/navigation";
 import { ConfigProvider } from "antd";
-import '@ant-design/v5-patch-for-react-19';
 
 export default function RootLayout({
   children,
