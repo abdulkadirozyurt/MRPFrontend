@@ -13,16 +13,10 @@ import IMaterial from "@/models/material/IMaterial";
 
 const { Option } = Select;
 
-export default function AddMaterialForm({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) {
+export default function AddMaterialForm({ onSuccess }: { onSuccess: () => void }) {
   const [form] = Form.useForm<IMaterial>();
   const dispatch: AppDispatch = useDispatch();
-  const materialStatus = useSelector(
-    (state: RootState) => state.supplier.status
-  );
+  const materialStatus = useSelector((state: RootState) => state.supplier.status);
   const suppliers = useSelector((state: RootState) => state.supplier.suppliers);
   // const [selectedSupplierIds, setSelectedSupplierIds] = useState<string[]>([]);
 
@@ -43,22 +37,10 @@ export default function AddMaterialForm({
   return (
     <>
       <h2 className="text-2xl font-bold text-center mb-6">Yeni Malzeme Ekle</h2>
-      <Form
-        className="flex flex-col justify-between"
-        form={form}
-        name="addMaterialForm"
-        layout="vertical"
-        onFinish={onFinish}
-      >
+      <Form className="flex flex-col justify-between" form={form} name="addMaterialForm" layout="vertical" onFinish={onFinish}>
         <div className="container flex flex-col px-6 md:mx-auto md:px-12 md:flex-row md:justify-center md:gap-5">
           <div className="w-full md:w-2/5">
-            <Form.Item
-              name="name"
-              label="Malzeme Adı"
-              rules={[
-                { required: true, message: "Lütfen malzeme adını giriniz!" },
-              ]}
-            >
+            <Form.Item name="name" label="Malzeme Adı" rules={[{ required: true, message: "Lütfen malzeme adını giriniz!" }]}>
               <Input placeholder="Malzeme adını giriniz" />
             </Form.Item>
 
@@ -74,11 +56,7 @@ export default function AddMaterialForm({
                 },
               ]}
             >
-              <InputNumber
-                min={0}
-                placeholder="Stok miktarını giriniz"
-                className="!w-full"
-              />
+              <InputNumber min={0} placeholder="Stok miktarını giriniz" className="!w-full" />
             </Form.Item>
 
             <Form.Item
@@ -104,28 +82,14 @@ export default function AddMaterialForm({
 
           <div className="w-full md:w-2/5">
             <div className="flex flex-row gap-2">
-              <Form.Item
-                name="unitType"
-                label="Birim Türü"
-                rules={[
-                  { required: true, message: "Lütfen birim türünü seçiniz!" },
-                ]}
-                className="w-32"
-              >
+              <Form.Item name="unitType" label="Birim Türü" rules={[{ required: true, message: "Lütfen birim türünü seçiniz!" }]} className="w-32">
                 <Select placeholder="Seçiniz">
                   {UNIT_TYPES.map((type) => (
                     <Option key={type.key}>{type.label}</Option>
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item
-                name="entryType"
-                label="Giriş Türü"
-                className="w-32"
-                rules={[
-                  { required: true, message: "Lütfen giriş türünü seçiniz!" },
-                ]}
-              >
+              <Form.Item name="entryType" label="Giriş Türü" className="w-32" rules={[{ required: true, message: "Lütfen giriş türünü seçiniz!" }]}>
                 <Select placeholder="Seçiniz">
                   {ENTRY_TYPES.map((type) => (
                     <Option key={type.key}>{type.label}</Option>
@@ -147,11 +111,7 @@ export default function AddMaterialForm({
                 },
               ]}
             >
-              <InputNumber
-                min={0}
-                placeholder="Fiyatı giriniz"
-                className="!w-full"
-              />
+              <InputNumber min={0} placeholder="Fiyatı giriniz" className="!w-full" />
             </Form.Item>
 
             <Form.Item
@@ -164,22 +124,13 @@ export default function AddMaterialForm({
                 },
               ]}
             >
-              <InputNumber
-                min={0}
-                placeholder="Yeniden sipariş seviyesini giriniz"
-                className="!w-full"
-              />
+              <InputNumber min={0} placeholder="Yeniden sipariş seviyesini giriniz" className="!w-full" />
             </Form.Item>
           </div>
         </div>
 
         <div className="flex items-center justify-center">
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="w-1/2"
-            loading={materialStatus === "loading"}
-          >
+          <Button type="primary" htmlType="submit" className="w-1/2" loading={materialStatus === "loading"}>
             Ekle
           </Button>
         </div>
