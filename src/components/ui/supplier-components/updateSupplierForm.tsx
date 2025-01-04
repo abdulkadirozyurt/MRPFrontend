@@ -26,24 +26,16 @@ export default function UpdateSupplierForm({
     dispatch(fetchMaterials());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (initialValues) {
-  //     form.setFieldsValue({
-  //       ...initialValues,
-  //       materialsOfSupplied: initialValues.materialsOfSupplied.map((material: IMaterial) => material._id),
-  //     });
-  //   }
-  // }, [initialValues, form]);
-
   const onFinish = async (values: any) => {
-    const updatedSupplier = {
-      ...initialValues,
-      ...values,
-    };
+    const updatedSupplier = { ...initialValues, ...values };
     await onUpdate(updatedSupplier);
     form.resetFields();
     onSuccess();
   };
+
+  useEffect(() => {
+    form.resetFields();
+  }, [initialValues]);
 
   return (
     <>
@@ -104,7 +96,7 @@ export default function UpdateSupplierForm({
                   label: material.name,
                   value: material._id,
                 }))}
-                // value={initialValues?.materialsOfSupplied.map((material: IMaterial) => material._id)}
+                // value={initialValues?.materialsOfSupplied?.map((material: IMaterial) => material._id)}
               />
             </Form.Item>
 
