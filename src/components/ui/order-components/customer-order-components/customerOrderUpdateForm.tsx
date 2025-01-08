@@ -1,6 +1,7 @@
 import { ICustomerOrder } from "@/models/order/ICustomerOrder";
 import { toLocalTime, toUTC } from "@/utilities/dates/datetime-util";
 import { fetchCustomers } from "@/utilities/redux/slices/customerSlice";
+import { fetchProducts } from "@/utilities/redux/slices/productSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 import dayjs from "dayjs";
@@ -38,7 +39,7 @@ export default function CustomerOrderUpdateForm({
   };
 
   useEffect(() => {
-    // dispatch(fetchProducts());
+    dispatch(fetchProducts());
     dispatch(fetchCustomers());
   }, [dispatch]);
 
@@ -49,45 +50,28 @@ export default function CustomerOrderUpdateForm({
       onFinish={onFinish}
       initialValues={{
         ...initialValues,
+        products: initialValues.products.map((item) => ({
+          productId: item.productId._id,
+          quantity: item.quantity,
+        })),
         deliveryDate: initialValues.deliveryDate
           ? dayjs(initialValues.deliveryDate)
           : null,
-        // customerId:
-        //   typeof initialValues.customerId === "object"
-        //     ? initialValues.customerId._id
-        //     : initialValues.customerId,
       }}
     >
-      {/* <Form.Item
-        name="customerId"
-        label="Müşteri"
-        rules={[{ required: true, message: "Lütfen bir müşteri seçiniz!" }]}
-      >
-        <Select
-          mode="multiple"
-          placeholder="Müşteri Seçiniz"
-          defaultValue={initialValues.customerId}
-        >
-          {customers.map((customer) => (
-            <Option key={customer._id} value={customer._id}>
-              {customer.companyName}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item> */}
-
       <Form.Item
         name="customerId"
         label="Müşteri"
         rules={[{ required: true, message: "Lütfen bir müşteri seçiniz!" }]}
       >
-        <Select placeholder="Müşteri Seçiniz">
-          {customers.map((customer) => (
-            <Option key={customer._id} value={customer._id}>
-              {customer.companyName}
-            </Option>
-          ))}
-        </Select>
+        <Select
+          placeholder="Müşteri Seçiniz"
+          defaultValue={initialValues.customerId}
+          options={customers.map((customer) => ({
+            label: customer.companyName,
+            value: customer._id,
+          }))}
+        />
       </Form.Item>
 
       <Form.Item
@@ -127,13 +111,14 @@ export default function CustomerOrderUpdateForm({
                   rules={[{ required: true, message: "Ürün seçiniz!" }]}
                   className="flex-1"
                 >
-                  <Select placeholder="Ürün Seç">
-                    {products.map((product) => (
-                      <Option key={product._id} value={product._id}>
-                        {product.name}
-                      </Option>
-                    ))}
-                  </Select>
+                  <Select
+                    mode="multiple"
+                    placeholder="Ürün Seç"
+                    options={products.map((product) => ({
+                      label: product.name,
+                      value: product._id,
+                    }))}
+                  />
                 </Form.Item>
                 <Form.Item
                   {...restField}
