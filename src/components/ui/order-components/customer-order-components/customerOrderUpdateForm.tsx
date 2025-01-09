@@ -15,7 +15,7 @@ export default function CustomerOrderUpdateForm({
   onSuccess,
   onUpdate,
 }: {
-  initialValues: ICustomerOrder;
+  initialValues: ICustomerOrder | null;
   onSuccess: () => void;
   onUpdate: (values: ICustomerOrder) => void;
 }) {
@@ -25,17 +25,23 @@ export default function CustomerOrderUpdateForm({
   const products = useSelector((state: RootState) => state.product.products);
 
   const onFinish = async (values: any) => {
-    const utcDeliveryDate = values.deliveryDate
-      ? toUTC(values.deliveryDate)
-      : null;
-    const updatedOrder = {
-      ...initialValues,
-      ...values,
-      deliveryDate: utcDeliveryDate,
-    };
-    await onUpdate(updatedOrder);
-    form.resetFields();
-    onSuccess();
+    try {
+      const customerOrderData = {
+        ...values,
+        customerId: values.customerId,
+        deliveryDate: toUTC(values.deliveryDate),
+        products: values.products.map((item: any) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+      };
+
+      await onUpdate(customerOrderData);
+      form.resetFields();
+      onSuccess();
+    } catch (error) {
+      console.error("Müşteri siparişi güncellenirken hata oluştu:", error);
+    }
   };
 
   useEffect(() => {
@@ -50,12 +56,13 @@ export default function CustomerOrderUpdateForm({
       onFinish={onFinish}
       initialValues={{
         ...initialValues,
-        products: initialValues.products.map((item) => ({
-          productId: item.productId._id,
+        customerId: initialValues?.customerId?._id,
+        products: initialValues?.products?.map((item) => ({
+          productId: item.productId?._id,
           quantity: item.quantity,
         })),
-        deliveryDate: initialValues.deliveryDate
-          ? dayjs(initialValues.deliveryDate)
+        deliveryDate: initialValues?.deliveryDate
+          ? dayjs(initialValues?.deliveryDate)
           : null,
       }}
     >
@@ -66,7 +73,7 @@ export default function CustomerOrderUpdateForm({
       >
         <Select
           placeholder="Müşteri Seçiniz"
-          defaultValue={initialValues.customerId}
+          defaultValue={initialValues?.customerId}
           options={customers.map((customer) => ({
             label: customer.companyName,
             value: customer._id,

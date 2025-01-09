@@ -11,11 +11,17 @@ import { useDispatch, useSelector } from "react-redux";
 
 const { Option } = Select;
 
-export default function AddCustomerOrderForm({ onSuccess }: { onSuccess: () => void }) {
+export default function AddCustomerOrderForm({
+  onSuccess,
+}: {
+  onSuccess: () => void;
+}) {
   const dispatch: AppDispatch = useDispatch();
   const products = useSelector((state: RootState) => state.product.products);
   const customers = useSelector((state: RootState) => state.customer.customers);
-  const customerOrderStatus = useSelector((state: RootState) => state.customerOrders.status);
+  const customerOrderStatus = useSelector(
+    (state: RootState) => state.customerOrders.status
+  );
 
   const [form] = Form.useForm();
 
@@ -45,7 +51,11 @@ export default function AddCustomerOrderForm({ onSuccess }: { onSuccess: () => v
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
-      <Form.Item name="customerId" label="Müşteri" rules={[{ required: true, message: "Lütfen bir müşteri seçiniz!" }]}>
+      <Form.Item
+        name="customerId"
+        label="Müşteri"
+        rules={[{ required: true, message: "Lütfen bir müşteri seçiniz!" }]}
+      >
         <Select placeholder="Müşteri Seçiniz">
           {customers.map((customer) => (
             <Option key={customer._id} value={customer._id}>
@@ -105,14 +115,6 @@ export default function AddCustomerOrderForm({ onSuccess }: { onSuccess: () => v
         )}
       </Form.List>
 
-      {/* <Form.Item
-        name="deliveryDate"
-        label="Teslim Tarihi"
-        rules={[{ required: true, message: "Lütfen teslim tarihini giriniz!" }]}
-      >
-        <DatePicker className="w-full" showTime />
-      </Form.Item> */}
-
       <Form.Item
         name="deliveryDate"
         label="Teslim Tarihi"
@@ -130,7 +132,13 @@ export default function AddCustomerOrderForm({ onSuccess }: { onSuccess: () => v
           }),
         ]}
       >
-        <DatePicker className="w-full" showTime showHour showMinute format={(value) => toLocalTime(value.toDate())} />
+        <DatePicker
+          className="w-full"
+          showTime
+          showHour
+          showMinute
+          format={(value) => toLocalTime(value.toDate())}
+        />
       </Form.Item>
 
       <Form.Item
@@ -146,7 +154,11 @@ export default function AddCustomerOrderForm({ onSuccess }: { onSuccess: () => v
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit" loading={customerOrderStatus === "loading"}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={customerOrderStatus === "loading"}
+        >
           Ekle
         </Button>
       </Form.Item>

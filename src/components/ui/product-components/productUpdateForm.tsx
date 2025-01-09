@@ -26,31 +26,6 @@ export default function UpdateProductForm({
   const products = useSelector((state: RootState) => state.product.products);
   const materials = useSelector((state: RootState) => state.material.materials);
 
-  //   const onFinish = async (values: any) => {
-  //     const updatedProduct = {
-  //       ...initialValues,
-  //       ...values,
-  //     };
-
-  //     try {
-  //       const billOfMaterials = values.billOfMaterials.map((item: any) => ({
-  //         materialId: item.materialId,
-  //         quantity: item.quantity,
-  //       }));
-
-  //       const productData = {
-  //         ...values,
-  //         billOfMaterials,
-  //       };
-
-  //       await dispatch(addProduct(productData)).unwrap();
-  //       form.resetFields();
-  //       onSuccess();
-  //     } catch (error) {
-  //       console.error("Ürün ekleme hatası:", error);
-  //     }
-  //   };
-
   const onFinish = async (values: any) => {
     const updatedProduct = { ...initialValues, ...values };
     await onUpdate(updatedProduct);
@@ -58,16 +33,11 @@ export default function UpdateProductForm({
     onSuccess();
   };
 
-  const getMaterials = async () => {
-    await dispatch(fetchMaterials());
-  };
-
   useEffect(() => {
     form.resetFields();
   }, [initialValues]);
 
   useEffect(() => {
-    // getMaterials();
     dispatch(fetchMaterials());
   }, [dispatch]);
 
@@ -75,7 +45,6 @@ export default function UpdateProductForm({
     <>
       <h2 className="text-2xl font-bold text-center mb-4">Ürün Düzenle</h2>
       <Form
-        // className="grid grid-cols-1 md:grid-cols-2"
         className="flex flex-col justify-between"
         form={form}
         name="updateProductForm"
@@ -98,12 +67,7 @@ export default function UpdateProductForm({
             <Form.Item name="description" label="Açıklama" rules={[{ type: "string", message: "Lütfen bir metin giriniz." }]}>
               <Input placeholder="Ürün Açıklaması" className="!w-full" />
             </Form.Item>
-            <Form.Item
-              name="unitType"
-              label="Birim Türü"
-              rules={[{ required: true, message: "Lütfen birim türünü seçiniz!" }]}
-              className="w-32"
-            >
+            <Form.Item name="unitType" label="Birim Türü" rules={[{ required: true, message: "Lütfen birim türünü seçiniz!" }]} className="w-32">
               <Select placeholder="Seçiniz">
                 {UNIT_TYPES.map((type) => (
                   <Option key={type.key}>{type.label}</Option>

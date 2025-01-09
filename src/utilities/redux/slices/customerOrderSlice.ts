@@ -113,10 +113,10 @@ const customerOrdersSlice = createSlice({
         state.status = "succeeded";
         state.alertMessage = CUSTOMER_ORDER_ALERT_MESSAGES.updateCustomerOrderSuccess;
         state.alertResult = "success";
-        const index = state.orders.findIndex((order) => order._id === action.payload._id);
-        if (index !== -1) {
-          state.orders[index] = action.payload;
-        }
+        // const index = state.orders.findIndex((order) => order._id === action.payload._id);
+        // if (index !== -1) {
+        //   state.orders[index] = action.payload;
+        // }
       })
       .addCase(updateCustomerOrder.rejected, (state, action) => {
         state.status = "failed";

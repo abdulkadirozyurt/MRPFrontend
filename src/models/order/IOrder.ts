@@ -1,6 +1,3 @@
-
-
-
 export default interface IOrder {
   _id: string;
   orderDate: Date;
