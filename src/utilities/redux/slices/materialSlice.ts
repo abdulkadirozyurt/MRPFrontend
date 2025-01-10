@@ -25,7 +25,11 @@ const initialState: MaterialState = {
 };
 
 export const fetchMaterials = createAsyncThunk("material/fetchMaterials", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`);
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`,{
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
   return response.data.materials;
 });
 

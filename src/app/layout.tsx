@@ -37,9 +37,7 @@ export default function RootLayout({
               <ConfigProvider>
                 <div className="flex flex-col h-screen">
                   <Header />
-
                   <div className="flex-grow flex flex-col p-8 w-full items-center justify-center">{children}</div>
-
                   <Footer />
                 </div>
               </ConfigProvider>

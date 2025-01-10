@@ -16,7 +16,11 @@ const initialState: CustomerOrdersState = {
 
 // Fetch all customer orders
 export const fetchCustomerOrders = createAsyncThunk("customerOrders/fetchAll", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`);
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`,{
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
   return response.data.orders;
 });
 

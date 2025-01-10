@@ -4,6 +4,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import AuthState from "../types/authTypes";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 interface DecodedToken {
   role: string;
   userId: string;
@@ -15,7 +16,10 @@ const initialState: AuthState = {
   token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
   status: "idle",
   error: null,
-  userRole: typeof window !== "undefined" && localStorage.getItem("token") ? jwtDecode<DecodedToken>(localStorage.getItem("token") || "").role : null,
+  userRole:
+    typeof window !== "undefined" && localStorage.getItem("token")
+      ? (jwtDecode<DecodedToken>(localStorage.getItem("token") || "") as DecodedToken).role
+      : null,
   isRegistered: false,
   isAuthenticated: typeof window !== "undefined" && !!localStorage.getItem("token"),
 };
@@ -33,6 +37,7 @@ export const login = createAsyncThunk("auth/login", async (credentials: { email:
     return rejectWithValue(error.response?.data?.message || "Login failed");
   }
 });
+
 export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, null, {
@@ -45,6 +50,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValu
     return rejectWithValue(error.response?.data?.message || "Logout failed");
   }
 });
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
