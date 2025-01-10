@@ -48,7 +48,6 @@ jobs:
           VDS_IP: ${{ secrets.VDS_IP }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ secrets.VDS_IP }} << EOFMARK
-          mkdir -p /var/www/frontend
           docker pull $DOCKER_USERNAME/my-frontend-image:latest
           docker stop frontend-container || true
           docker rm frontend-container || true
