@@ -13,6 +13,7 @@ import {
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -106,15 +107,25 @@ const items: MenuItem[] = [
         key: "system",
         label: <Link href="/app/settings/system">Sistem Ayarları</Link>,
       },
+      {
+        key: "logout",
+        label: "Çıkış Yap",
+      },
     ],
   },
 ];
 
 export default function Navbar() {
   const [current, setCurrent] = useState("dashboard");
-
+  const router = useRouter();
   const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
+    if (e.key === "logout") {
+      localStorage.removeItem("token");
+      setCurrent("dashboard");
+      router.push("/login");
+    } else {
+      setCurrent(e.key);
+    }
   };
 
   return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
