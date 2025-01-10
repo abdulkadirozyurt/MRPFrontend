@@ -25,7 +25,11 @@ const initialState: SupplierState = {
 };
 
 export const fetchSuppliers = createAsyncThunk("supplier/fetchSuppliers", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`);
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
   return response.data.suppliers;
 });
 

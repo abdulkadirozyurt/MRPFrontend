@@ -14,7 +14,11 @@ const initialState: CustomerState = {
 };
 
 export const fetchCustomers = createAsyncThunk("customers/fetchAll", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/customers`);
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/customers`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
   return response.data.customers;
 });
 
@@ -115,17 +119,17 @@ const customerSlice = createSlice({
         state.alertMessage = "Müşteri güncellenirken bir hata oluştu";
         state.alertResult = "error";
         state.status = "failed";
-      })
+      });
 
-      // .addMatcher(
-      //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
-      //   (state) => {
-      //     setTimeout(() => {
-      //       state.alertMessage = "";
-      //       state.alertResult = "";
-      //     }, 3000);
-      //   }
-      // );
+    // .addMatcher(
+    //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+    //   (state) => {
+    //     setTimeout(() => {
+    //       state.alertMessage = "";
+    //       state.alertResult = "";
+    //     }, 3000);
+    //   }
+    // );
   },
 });
 
