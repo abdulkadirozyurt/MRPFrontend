@@ -18,6 +18,7 @@ export default function Navbar() {
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const userRole = useSelector((state: RootState) => state.auth.userRole);
+  console.log("Navbar userRole:", userRole);
 
   const handleLogout = () => {
     dispatch(logout());

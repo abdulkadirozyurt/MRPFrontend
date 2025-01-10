@@ -4,12 +4,18 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import AuthState from "../types/authTypes";
+interface DecodedToken {
+  role: string;
+  userId: string;
+  exp: number;
+  iat: number;
+}
 
 const initialState: AuthState = {
   token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
   status: "idle",
   error: null,
-  userRole: null,
+  userRole: typeof window !== "undefined" && localStorage.getItem("token") ? jwtDecode<DecodedToken>(localStorage.getItem("token") || "").role : null,
   isRegistered: false,
   isAuthenticated: typeof window !== "undefined" && !!localStorage.getItem("token"),
 };
@@ -70,7 +76,11 @@ export const authSlice = createSlice({
         state.status = "succeeded";
         state.token = action.payload.token;
         const decodedToken: any = jwtDecode(action.payload.token);
-        state.userRole = decodedToken.role;
+        console.log("decodedToken:", decodedToken);
+
+        state.userRole = decodedToken?.role;
+        console.log("state.userRole:", state.userRole);
+
         state.isAuthenticated = true;
         localStorage.setItem("token", action.payload.token);
       })

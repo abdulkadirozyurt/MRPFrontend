@@ -4,5 +4,5 @@ export default interface AuthState {
   error: string | null;
   isRegistered: boolean;
   isAuthenticated: boolean;
-  userRole: string | null;
+  userRole: string|null;
 }
