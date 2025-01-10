@@ -42,6 +42,19 @@ export const login = createAsyncThunk("auth/login", async (credentials: { email:
   }
 });
 
+export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, null, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data.message;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || "Logout failed");
+  }
+});
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -51,11 +64,7 @@ export const authSlice = createSlice({
       state.isAuthenticated = true;
       localStorage.setItem("token", action.payload);
     },
-    logout(state) {
-      state.token = null;
-      state.isAuthenticated = false;
-      localStorage.removeItem("token");
-    },
+
     resetRegistrationState(state) {
       state.isRegistered = false;
     },
@@ -87,9 +96,23 @@ export const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
+      })
+
+      .addCase(logout.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.status = "succeeded";
+        state.token = null;
+        state.isAuthenticated = false;
+        localStorage.removeItem("token");
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
       });
   },
 });
 
-export const { loginSuccess, logout, resetRegistrationState } = authSlice.actions;
+export const { loginSuccess, resetRegistrationState } = authSlice.actions;
 export default authSlice;

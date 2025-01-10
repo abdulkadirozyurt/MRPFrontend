@@ -10,7 +10,6 @@ export default function Topbar() {
         <h1 className="ml-2">flowMRP</h1>
       </div>
 
-      <div>LOGİN LOGOUT</div>
     </div>
   );
 }

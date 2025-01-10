@@ -1,8 +1,8 @@
-import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utilities/redux/store";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 
 interface ProtectedRouteProps {
   children: ReactNode;
