@@ -42,18 +42,12 @@ jobs:
           docker system prune -af --volumes || true
           EOFMARK
 
-      - name: Cleanup Docker Images and Volumes
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ secrets.VDS_IP }} << EOFMARK
-          docker system prune -af --volumes || true
-          EOFMARK
-
       - name: Deploy to VDS
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           VDS_IP: ${{ secrets.VDS_IP }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ secrets.VDS_IP }} << EOFMA
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ secrets.VDS_IP }} << EOFMARK
           mkdir -p /var/www/frontend
           docker pull $DOCKER_USERNAME/my-frontend-image:latest
           docker stop frontend-container || true
