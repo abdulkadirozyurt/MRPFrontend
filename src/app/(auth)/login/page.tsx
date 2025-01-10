@@ -1,7 +1,5 @@
 "use client";
 
-
-
 import LoginForm from "@/components/ui/auth-components/loginForm";
 import React from "react";
 
