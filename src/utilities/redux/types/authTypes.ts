@@ -3,6 +3,6 @@ export default interface AuthState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   isRegistered: boolean;
-  isAuthenticated: boolean,
-  
+  isAuthenticated: boolean;
+  userRole: string | null;
 }
