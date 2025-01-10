@@ -1,9 +1,9 @@
 "use client";
 
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import AuthState from "../types/authTypes";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 interface DecodedToken {
   role: string;
   userId: string;
