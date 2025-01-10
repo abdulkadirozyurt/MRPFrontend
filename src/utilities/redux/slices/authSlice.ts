@@ -3,6 +3,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import AuthState from "../types/authTypes";
+import { jwtDecode } from "jwt-decode";
 
 const initialState: AuthState = {
   token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
@@ -12,28 +13,34 @@ const initialState: AuthState = {
   isAuthenticated: typeof window !== "undefined" && !!localStorage.getItem("token"),
 };
 
-export const register = createAsyncThunk(
-  "auth/register",
-  async (user: { firstname: string; lastname: string; email: string; password: string }) => {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, user);
-    return response.data.token;
-  }
-);
+export const register = createAsyncThunk("auth/register", async (user: { firstname: string; lastname: string; email: string; password: string }) => {
+  const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, user);
+  return response.data.token;
+});
 
-export const login = createAsyncThunk(
-  "auth/login",
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-        credentials
-      );
-      return response.data.token;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
-    }
+// export const login = createAsyncThunk(
+//   "auth/login",
+//   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.post(
+//         `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+//         credentials
+//       );
+//       return response.data.token;
+//     } catch (error: any) {
+//       return rejectWithValue(error.response?.data?.message || "Login failed");
+//     }
+//   }
+// );
+export const login = createAsyncThunk("auth/login", async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, credentials);
+    const decodedToken = jwtDecode(response.data.token);
+    return { token: response.data.token, user: decodedToken };
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || "Login failed");
   }
-);
+});
 
 export const authSlice = createSlice({
   name: "auth",
@@ -60,9 +67,9 @@ export const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.token = action.payload;
-        state.isRegistered = true;
-        localStorage.setItem("token", action.payload);
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        localStorage.setItem("token", action.payload.token);
       })
       .addCase(register.rejected, (state, action) => {
         state.status = "failed";
@@ -73,8 +80,8 @@ export const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.token = action.payload;
-        localStorage.setItem("token", action.payload);
+        state.token = action.payload.token;
+        localStorage.setItem("token", action.payload.token);
         state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
