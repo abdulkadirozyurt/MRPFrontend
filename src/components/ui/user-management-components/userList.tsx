@@ -10,6 +10,7 @@ import IUser from "@/models/user/IUser";
 import AddUserForm from "./addUserForm";
 import UpdateUserForm from "./updateUserForm";
 import Message from "@/components/common/Message";
+import { UserRoles } from "@/utilities/constants/UserRoles";
 
 export default function UserList() {
   const [searchText, setSearchText] = useState<string>("");
@@ -81,7 +82,19 @@ export default function UserList() {
       title: "Rol",
       dataIndex: "role",
       key: "role",
-      render: (role: string) => <Tag color="blue">{role}</Tag>,
+      render: (role: string) => (
+        <Tag color={
+          role === UserRoles.Admin ? "red" :
+          role === UserRoles.User ? "blue" :
+          role === UserRoles.Manager ? "green" :
+          role === UserRoles.Viewer ? "purple" :
+          role === UserRoles.ProductionPlanner ? "orange" :
+          role === UserRoles.SalesStaff ? "cyan" :
+          role === UserRoles.ProcurementManager ? "magenta" : "default"
+        }>
+          {role}
+        </Tag>
+      ),
     },
     {
       title: "İşlemler",
