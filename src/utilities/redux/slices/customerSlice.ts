@@ -23,12 +23,21 @@ export const fetchCustomers = createAsyncThunk("customers/fetchAll", async () =>
 });
 
 export const addCustomer = createAsyncThunk("customers/add", async (customer: Partial<ICustomer>) => {
-  const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/customers`, customer);
+  const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/customers`, customer, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
   return response.data.customer;
 });
 
 export const deleteCustomer = createAsyncThunk("customers/delete", async (id: string) => {
-  await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/customers`, { data: { id } });
+  await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/customers`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    data: { id },
+  });
   return id;
 });
 
@@ -38,6 +47,10 @@ export const updateCustomer = createAsyncThunk(
     const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/customers`, {
       id,
       ...updatedCustomer,
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
     return response.data.customer;
   }

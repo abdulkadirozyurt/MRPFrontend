@@ -23,7 +23,7 @@ const initialState: SupplierOrdersState = {
 
 // Supplier Orders Fetch
 export const fetchSupplierOrders = createAsyncThunk("supplierOrder/fetchSupplierOrders", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/supplier-orders`,{
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/supplier-orders`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -34,7 +34,11 @@ export const addSupplierOrder = createAsyncThunk(
   "supplierOrder/addSupplierOrder",
   async (newOrder: ISupplierOrder, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/supplier-orders`, newOrder);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/supplier-orders`, newOrder, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       return response.data.supplierOrder;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Tedarikçi siparişi ekleme başarısız oldu.");

@@ -25,7 +25,7 @@ const initialState: MaterialState = {
 };
 
 export const fetchMaterials = createAsyncThunk("material/fetchMaterials", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`,{
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -35,7 +35,11 @@ export const fetchMaterials = createAsyncThunk("material/fetchMaterials", async 
 
 export const addMaterial = createAsyncThunk("material/addMaterial", async (newMaterial: IMaterial, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, newMaterial);
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, newMaterial, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     return response.data.material;
   } catch (error: any) {
     return rejectWithValue(error.response.data.message || "material add failed");
@@ -44,21 +48,37 @@ export const addMaterial = createAsyncThunk("material/addMaterial", async (newMa
 
 export const deleteMaterial = createAsyncThunk("material/deleteMaterial", async (id: string, { rejectWithValue }) => {
   try {
-    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, { data: { id } });
+    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      data: { id },
+    });
     return response.data.message;
   } catch (error: any) {
     return rejectWithValue(error.response.data.message || "material delete failed");
   }
 });
 
-export const updateMaterial = createAsyncThunk("material/updateMaterial", async ({ id, updatedMaterial }: { id: string, updatedMaterial: IMaterial }, { rejectWithValue }) => {
-  try {
-    const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/materials`, { id, ...updatedMaterial });
-    return response.data.material;
-  } catch (error: any) {
-    return rejectWithValue(error.response.data.message || "material update failed");
+export const updateMaterial = createAsyncThunk(
+  "material/updateMaterial",
+  async ({ id, updatedMaterial }: { id: string; updatedMaterial: IMaterial }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/materials`,
+        { id, ...updatedMaterial },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return response.data.material;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.message || "material update failed");
+    }
   }
-});
+);
 
 const materialSlice = createSlice({
   name: "material",
@@ -138,15 +158,15 @@ const materialSlice = createSlice({
         state.error = (action.payload as string) || "failed to update material";
       });
 
-      // .addMatcher(
-      //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
-      //   (state) => {
-      //     setTimeout(() => {
-      //       state.alertMessage = "";
-      //       state.alertResult = "";
-      //     }, 3000);
-      //   }
-      // );
+    // .addMatcher(
+    //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+    //   (state) => {
+    //     setTimeout(() => {
+    //       state.alertMessage = "";
+    //       state.alertResult = "";
+    //     }, 3000);
+    //   }
+    // );
   },
 });
 

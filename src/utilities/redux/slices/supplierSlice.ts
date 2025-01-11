@@ -35,7 +35,11 @@ export const fetchSuppliers = createAsyncThunk("supplier/fetchSuppliers", async 
 
 export const addSupplier = createAsyncThunk("supplier/addSupplier", async (newSupplier: ISupplier, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, newSupplier);
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, newSupplier, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     return response.data.supplier;
   } catch (error: any) {
     return rejectWithValue(error.response.data.message || "supplier add failed");
@@ -45,6 +49,9 @@ export const addSupplier = createAsyncThunk("supplier/addSupplier", async (newSu
 export const deleteSupplier = createAsyncThunk("supplier/deleteSupplier", async (id: string, { rejectWithValue }) => {
   try {
     const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       data: { id },
     });
     return response.data.message;
@@ -60,6 +67,10 @@ export const updateSupplier = createAsyncThunk(
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, {
         id,
         ...updatedSupplier,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       return response.data.supplier;
     } catch (error: any) {

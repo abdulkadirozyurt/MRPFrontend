@@ -16,7 +16,7 @@ const initialState: CustomerOrdersState = {
 
 // Fetch all customer orders
 export const fetchCustomerOrders = createAsyncThunk("customerOrders/fetchAll", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`,{
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -27,7 +27,11 @@ export const fetchCustomerOrders = createAsyncThunk("customerOrders/fetchAll", a
 // Add a customer order
 export const addCustomerOrder = createAsyncThunk("customerOrders/add", async (newOrder: ICustomerOrder, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`, newOrder);
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`, newOrder, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     return response.data.order;
   } catch (error: any) {
     return rejectWithValue(error.response.data.message || "Failed to add order");
@@ -42,6 +46,10 @@ export const updateCustomerOrder = createAsyncThunk(
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`, {
         id,
         ...updatedOrder,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       return response.data.order;
     } catch (error: any) {
@@ -54,6 +62,9 @@ export const updateCustomerOrder = createAsyncThunk(
 export const deleteCustomerOrder = createAsyncThunk("customerOrders/delete", async (id: string, { rejectWithValue }) => {
   try {
     const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/customer-orders`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       data: { id },
     });
     return response.data.message;

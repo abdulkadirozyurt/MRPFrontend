@@ -23,7 +23,7 @@ const initialState: ProductState = {
 };
 
 export const fetchProducts = createAsyncThunk("product/fetchProducts", async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/products`,{
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -33,7 +33,11 @@ export const fetchProducts = createAsyncThunk("product/fetchProducts", async () 
 
 export const addProduct = createAsyncThunk("product/addProduct", async (newProduct: IProduct, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, newProduct);
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, newProduct, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     return response.data.product;
   } catch (error: any) {
     return rejectWithValue(error.response.data.message || "Ürün ekleme başarısız oldu.");
@@ -43,6 +47,9 @@ export const addProduct = createAsyncThunk("product/addProduct", async (newProdu
 export const deleteProduct = createAsyncThunk("product/deleteProduct", async (id: string, { rejectWithValue }) => {
   try {
     const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/products/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       data: { id },
     });
     return response.data.message;
@@ -55,7 +62,11 @@ export const updateProduct = createAsyncThunk(
   "product/updateProduct",
   async ({ id, updatedProduct }: { id: string; updatedProduct: IProduct }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, { id, ...updatedProduct });
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, { id, ...updatedProduct }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       return response.data.product;
     } catch (error: any) {
       return rejectWithValue(error.response.data.message || "Ürün güncelleme başarısız oldu.");

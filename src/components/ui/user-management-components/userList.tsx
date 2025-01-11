@@ -10,7 +10,7 @@ import IUser from "@/models/user/IUser";
 import AddUserForm from "./addUserForm";
 import UpdateUserForm from "./updateUserForm";
 import Message from "@/components/common/Message";
-import { UserRoles } from "@/utilities/constants/UserRoles";
+import { UserLabels, UserRoles } from "@/utilities/constants/UserRoles";
 
 export default function UserList() {
   const [searchText, setSearchText] = useState<string>("");
@@ -92,7 +92,7 @@ export default function UserList() {
           role === UserRoles.SalesStaff ? "cyan" :
           role === UserRoles.ProcurementManager ? "magenta" : "default"
         }>
-          {role}
+          {UserLabels.find((label) => label.key === role)?.label}
         </Tag>
       ),
     },
