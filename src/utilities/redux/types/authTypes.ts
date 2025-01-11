@@ -1,4 +1,6 @@
-export default interface AuthState {
+import CommonState from "../commonState";
+
+export default interface AuthState extends CommonState {
   token: string | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;

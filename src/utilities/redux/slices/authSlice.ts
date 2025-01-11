@@ -22,6 +22,8 @@ const initialState: AuthState = {
       : null,
   isRegistered: false,
   isAuthenticated: typeof window !== "undefined" && !!localStorage.getItem("token"),
+  alertMessage: "",
+  alertResult: "",
 };
 
 export const register = createAsyncThunk("auth/register", async (user: { firstname: string; lastname: string; email: string; password: string }) => {
