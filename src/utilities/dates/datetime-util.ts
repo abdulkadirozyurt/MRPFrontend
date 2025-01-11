@@ -12,7 +12,12 @@ dayjs.extend(localizedFormat);
  * Tarayıcı diline göre locale ayarını yapılandırır.
  */
 const configureDayjsLocale = async () => {
-  const userLanguage = navigator.language || "en"; // Örn: "en-US", "tr-TR"
+  let userLanguage = "en"; // Varsayılan dil
+
+  if (typeof navigator !== "undefined") {
+    userLanguage = navigator.language || "en"; // Örn: "en-US", "tr-TR"
+  }
+
   const languageCode = userLanguage.split("-")[0]; // Örn: "en", "tr"
 
   try {
@@ -24,6 +29,20 @@ const configureDayjsLocale = async () => {
     dayjs.locale("en"); // Varsayılan dil
   }
 };
+
+// const configureDayjsLocale = async () => {
+//   const userLanguage = navigator.language || "en"; // Örn: "en-US", "tr-TR"
+//   const languageCode = userLanguage.split("-")[0]; // Örn: "en", "tr"
+
+//   try {
+//     // Tarayıcı diline uygun locale dosyasını yükle
+//     await import(`dayjs/locale/${languageCode}.js`);
+//     dayjs.locale(languageCode);
+//   } catch (error) {
+//     console.warn(`Locale "${languageCode}" yüklenemedi. Varsayılan İngilizce kullanılacak.`);
+//     dayjs.locale("en"); // Varsayılan dil
+//   }
+// };
 
 // Locale ayarını başlat
 await configureDayjsLocale();
