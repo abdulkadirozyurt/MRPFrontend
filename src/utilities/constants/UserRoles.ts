@@ -9,11 +9,11 @@ export enum UserRoles {
 }
 
 export const UserLabels = [
-  { key: UserRoles.Admin, label: "Admin" },
-  { key: UserRoles.User, label: "User" },
-  { key: UserRoles.Manager, label: "Manager" },
-  { key: UserRoles.Viewer, label: "Viewer" },
-  { key: UserRoles.ProductionPlanner, label: "Production Planner" },
-  { key: UserRoles.SalesStaff, label: "Sales Staff" },
-  { key: UserRoles.ProcurementManager, label: "Procurement Manager" },
+  { key: UserRoles.Admin, label: "Sistem Admin" },
+  { key: UserRoles.User, label: "Standart Kullanıcı" },
+  { key: UserRoles.Manager, label: "Yönetici" },
+  { key: UserRoles.Viewer, label: "Deneme Hesabı" },
+  { key: UserRoles.ProductionPlanner, label: "Üretim Planlama" },
+  { key: UserRoles.SalesStaff, label: "Satış Personeli" },
+  { key: UserRoles.ProcurementManager, label: "Tedarik Yönetimi" },
 ];

@@ -6,18 +6,24 @@ import { DashboardOutlined, DropboxOutlined, FileTextOutlined, SettingOutlined, 
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserRoles } from "@/utilities/constants/UserRoles";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 export default function Navbar() {
-  const [current, setCurrent] = useState("dashboard");
+  const [current, setCurrent] = useState("");
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const userRole = useSelector((state: RootState) => state.auth.userRole);
+
+  const pathname = usePathname();
+  useEffect(() => {
+    const path = pathname?.split("/").pop();
+    setCurrent(path || "dashboard");
+  }, [pathname]);
 
   const handleLogout = () => {
     dispatch(logout());
