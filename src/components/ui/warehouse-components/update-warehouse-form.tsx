@@ -30,16 +30,9 @@ export default function UpdateWarehouseForm({
   };
 
   useEffect(() => {
-    dispatch(fetchUsers()); // Kullanıcıları çekiyoruz
+    dispatch(fetchUsers()); 
     form.resetFields();
   }, [dispatch, form, initialValues]);
-
-  //   useEffect(() => {
-  //     if (initialValues) {
-  //       const managerId = initialValues.managerId?._id || initialValues.managerId; // Hem ID hem nesne kontrolü
-  //       form.setFieldsValue({ ...initialValues, managerId });
-  //     }
-  //   }, [initialValues, form]);
 
   return (
     <>
