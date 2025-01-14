@@ -55,8 +55,8 @@ export default function SupplierOrderAddForm({ onSuccess }: { onSuccess: () => v
         </Select>
       </Form.Item>
 
-      <Form.Item name="warehouseId" label="Depo ID" rules={[{ required: true, message: "Lütfen depo ID'sini giriniz!" }]}>
-        <Input placeholder="Depo ID'sini giriniz" />
+      <Form.Item name="warehouseId" label="Depo" rules={[{ required: true, message: "Lütfen depo ID'sini giriniz!" }]}>
+        <Input placeholder="Depo seçiniz" />
       </Form.Item>
 
       <Form.List name="products">

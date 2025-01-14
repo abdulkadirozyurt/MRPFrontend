@@ -30,21 +30,57 @@ export const fetchSupplierOrders = createAsyncThunk("supplierOrder/fetchSupplier
   });
   return response.data.orders;
 });
-export const addSupplierOrder = createAsyncThunk(
-  "supplierOrder/addSupplierOrder",
-  async (newOrder: ISupplierOrder, { rejectWithValue }) => {
+export const addSupplierOrder = createAsyncThunk("supplierOrder/addSupplierOrder", async (newOrder: ISupplierOrder, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/supplier-orders`, newOrder, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data.supplierOrder;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || "Tedarikçi siparişi ekleme başarısız oldu.");
+  }
+});
+
+export const updateSupplierOrder = createAsyncThunk(
+  "supplierOrder/update",
+  async ({ id, updatedOrder }: { id: string; updatedOrder: Partial<ISupplierOrder> }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/supplier-orders`, newOrder, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/orders/supplier-orders`,
+        {
+          id,
+          ...updatedOrder,
         },
-      });
-      return response.data.supplierOrder;
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return response.data.order;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Tedarikçi siparişi ekleme başarısız oldu.");
+      return rejectWithValue(error.response.data.message || "Failed to update order");
     }
   }
 );
+
+export const deleteSupplierOrder = createAsyncThunk("supplierOrder/delete", async (id: string, { rejectWithValue }) => {
+  try {
+    const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/supplier-orders`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      data: {
+        id,
+      },
+    });
+    return response.data.message;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data.message || "Failed to delete order");
+  }
+});
 
 const supplierOrderSlice = createSlice({
   name: "supplierOrder",
@@ -78,15 +114,15 @@ const supplierOrderSlice = createSlice({
       })
 
       // Diğer matcher'lar (Fulfilled & Rejected genel durumları)
-      // .addMatcher(
-      //   (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
-      //   (state) => {
-      //     setTimeout(() => {
-      //       state.alertMessage = "";
-      //       state.alertResult = "";
-      //     }, 3000);
-      //   }
-      // );
+      .addMatcher(
+        (action) => action.type.endsWith("/fulfilled") || action.type.endsWith("/rejected"),
+        (state) => {
+          setTimeout(() => {
+            state.alertMessage = "";
+            state.alertResult = "";
+          }, 3000);
+        }
+      );
   },
 });
 

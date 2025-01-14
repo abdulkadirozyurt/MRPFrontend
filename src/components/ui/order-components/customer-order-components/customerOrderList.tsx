@@ -2,11 +2,7 @@
 
 import { ICustomerOrder } from "@/models/order/ICustomerOrder";
 import { toLocalTime } from "@/utilities/dates/datetime-util";
-import {
-  deleteCustomerOrder,
-  fetchCustomerOrders,
-  updateCustomerOrder,
-} from "@/utilities/redux/slices/customerOrderSlice";
+import { deleteCustomerOrder, fetchCustomerOrders, updateCustomerOrder } from "@/utilities/redux/slices/customerOrderSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { Button, Input, Modal, Space, Table, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -26,28 +22,19 @@ export default function CustomerOrdersList() {
   const [mode, setMode] = useState<"add" | "update">("add");
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editingOrder, setEditingOrder] = useState<ICustomerOrder | null>(null);
-  const alertMessage = useSelector(
-    (state: RootState) => state.customerOrders.alertMessage
-  );
-  const alertResult = useSelector(
-    (state: RootState) => state.customerOrders.alertResult
-  );
+  const alertMessage = useSelector((state: RootState) => state.customerOrders.alertMessage);
+  const alertResult = useSelector((state: RootState) => state.customerOrders.alertResult);
   const loading = status === "loading";
 
   const filteredOrders = orders?.filter((order) =>
-    order?.customerId?.companyName
-      .toLowerCase()
-      .includes(searchText.toLowerCase())
+    order?.customerId?.companyName.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const handleSearch = (e: any) => {
     setSearchText(e.target.value);
   };
 
-  const showModal = (
-    mode: "add" | "update",
-    customerOrder?: ICustomerOrder
-  ) => {
+  const showModal = (mode: "add" | "update", customerOrder?: ICustomerOrder) => {
     setMode(mode);
     setEditingOrder(customerOrder || null);
     setIsModalVisible(true);
@@ -61,9 +48,7 @@ export default function CustomerOrdersList() {
 
   const handleEdit = async (updatedOrder: ICustomerOrder) => {
     try {
-      await dispatch(
-        updateCustomerOrder({ id: editingOrder?._id ?? "", updatedOrder })
-      ).unwrap();
+      await dispatch(updateCustomerOrder({ id: editingOrder?._id ?? "", updatedOrder })).unwrap();
       handleModalClose();
     } catch (error) {
       console.log(error);
@@ -85,8 +70,7 @@ export default function CustomerOrdersList() {
       title: "Müşteri",
       dataIndex: "customerId",
       key: "customerId",
-      render: (customerId) =>
-        typeof customerId === "object" ? customerId.companyName : customerId,
+      render: (customerId) => (typeof customerId === "object" ? customerId.companyName : customerId),
     },
     {
       title: "Toplam Fiyat",
@@ -127,30 +111,16 @@ export default function CustomerOrdersList() {
 
   return (
     <>
-      {alertMessage && alertResult && (
-        <Message result={alertResult} alertMessage={alertMessage} />
-      )}
+      {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
 
       <div className="flex items-center justify-between h-14">
-        <Input
-          className="!w-72"
-          value={searchText}
-          onChange={handleSearch}
-          prefix={<SearchOutlined />}
-          placeholder="Ara"
-        />
+        <Input className="!w-72" value={searchText} onChange={handleSearch} prefix={<SearchOutlined />} placeholder="Ara" />
 
         <Button type="primary" onClick={() => showModal("add")}>
           Yeni Sipariş Ekle
         </Button>
 
-        <Modal
-          open={isModalVisible}
-          okType="primary"
-          onCancel={() => setIsModalVisible(false)}
-          footer={null}
-          className="!w-4/6"
-        >
+        <Modal open={isModalVisible} okType="primary" onCancel={() => setIsModalVisible(false)} footer={null} className="!w-4/6">
           {mode === "add" ? (
             <AddCustomerOrderForm onSuccess={() => setIsModalVisible(false)} />
           ) : (
@@ -163,13 +133,7 @@ export default function CustomerOrdersList() {
         </Modal>
       </div>
 
-      <Table
-        dataSource={orders}
-        columns={columns}
-        rowKey="_id"
-        loading={status === "loading"}
-        pagination={{ pageSize: 10 }}
-      />
+      <Table dataSource={orders} columns={columns} rowKey="_id" loading={status === "loading"} pagination={{ pageSize: 10 }} />
     </>
   );
 }
