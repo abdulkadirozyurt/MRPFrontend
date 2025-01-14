@@ -19,26 +19,6 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
   const materials = useSelector((state: RootState) => state.material.materials);
   const [selectedMaterialIds, setSelectedMaterialIds] = useState<string[]>([]);
 
-  // const onFinish = async (values: any) => {
-  //   try {
-  //     const billOfMaterials = values.billOfMaterials.map((item: any) => ({
-  //       materialId: item.materialId,
-  //       quantity: item.quantity,
-  //     }));
-
-  //     const productData = {
-  //       ...values,
-  //       billOfMaterials,
-  //     };
-
-  //     await dispatch(addProduct(productData)).unwrap();
-  //     form.resetFields();
-  //     onSuccess();
-  //   } catch (error) {
-  //     console.error("Ürün ekleme hatası:", error);
-  //   }
-  // };
-
   const onFinish = async (values: any) => {
     try {
       await dispatch(addProduct(values)).unwrap();

@@ -32,8 +32,7 @@ export default function UpdateMaterialForm({
       ...initialValues,
       ...values,
     };
-    console.log("updatedMaterial", updatedMaterial);
-    
+
     try {
       await onUpdate(updatedMaterial);
       form.resetFields();
@@ -43,11 +42,10 @@ export default function UpdateMaterialForm({
     }
   };
 
-  
-
   useEffect(() => {
     dispatch(fetchSuppliers());
-  }, [dispatch]);
+    form.resetFields();
+  }, [dispatch, form, initialValues]);
 
   return (
     <>
@@ -108,14 +106,24 @@ export default function UpdateMaterialForm({
 
           <div className="w-full md:w-2/5">
             <div className="flex flex-row gap-2">
-              <Form.Item name="unitType" label="Birim Türü" rules={[{ required: true, message: "Lütfen birim türünü seçiniz!" }]} className="w-32">
+              <Form.Item
+                name="unitType"
+                label="Birim Türü"
+                rules={[{ required: true, message: "Lütfen birim türünü seçiniz!" }]}
+                className="w-32"
+              >
                 <Select placeholder="Seçiniz">
                   {UNIT_TYPES.map((type) => (
                     <Option key={type.key}>{type.label}</Option>
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item name="entryType" label="Giriş Türü" className="w-32" rules={[{ required: true, message: "Lütfen giriş türünü seçiniz!" }]}>
+              <Form.Item
+                name="entryType"
+                label="Giriş Türü"
+                className="w-32"
+                rules={[{ required: true, message: "Lütfen giriş türünü seçiniz!" }]}
+              >
                 <Select placeholder="Seçiniz">
                   {ENTRY_TYPES.map((type) => (
                     <Option key={type.key}>{type.label}</Option>
