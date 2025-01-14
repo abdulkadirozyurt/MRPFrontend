@@ -38,7 +38,7 @@ export default function UpdateMaterialForm({
       form.resetFields();
       onSuccess();
     } catch (error: any) {
-      console.log("eeerr", error);
+      console.error("material update error", error);
     }
   };
 

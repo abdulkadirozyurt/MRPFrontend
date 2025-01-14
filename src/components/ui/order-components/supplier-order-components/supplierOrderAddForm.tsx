@@ -7,10 +7,16 @@ import { fetchSuppliers } from "@/utilities/redux/slices/supplierSlice";
 import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
 import { Button, Form, Input, InputNumber, Select, DatePicker } from "antd";
 import { useEffect } from "react";
+import { ISupplierOrder } from "@/models/order/ISupplierOrder";
 
 const { Option } = Select;
 
-export default function SupplierOrderAddForm({ onSuccess }: { onSuccess: () => void }) {
+interface SupplierOrderAddFormProps {
+  onSuccess: () => void;
+  initialValues?: any;
+}
+
+export default function SupplierOrderAddForm({ onSuccess, initialValues = undefined }: SupplierOrderAddFormProps) {
   const dispatch: AppDispatch = useDispatch();
   const supplierOrderStatus = useSelector((state: RootState) => state.supplierOrders.status);
   const suppliers = useSelector((state: RootState) => state.supplier.suppliers);
@@ -21,6 +27,8 @@ export default function SupplierOrderAddForm({ onSuccess }: { onSuccess: () => v
   useEffect(() => {
     dispatch(fetchSuppliers());
     dispatch(fetchMaterials());
+    console.log(initialValues);
+    
   }, [dispatch]);
 
   const onFinish = async (values: any) => {
@@ -44,7 +52,7 @@ export default function SupplierOrderAddForm({ onSuccess }: { onSuccess: () => v
   };
 
   return (
-    <Form form={form} onFinish={onFinish} layout="vertical">
+    <Form form={form} onFinish={onFinish} layout="vertical" initialValues={initialValues}>
       <Form.Item name="supplierId" label="Tedarikçi" rules={[{ required: true, message: "Lütfen bir tedarikçi seçiniz!" }]}>
         <Select placeholder="Tedarikçi Seçiniz">
           {suppliers.map((supplier) => (
@@ -101,11 +109,7 @@ export default function SupplierOrderAddForm({ onSuccess }: { onSuccess: () => v
         )}
       </Form.List>
 
-      <Form.Item
-        name="deliveryDate"
-        label="Teslim Tarihi"
-        rules={[{ required: true, message: "Lütfen teslim tarihini giriniz!" }]}
-      >
+      <Form.Item name="deliveryDate" label="Teslim Tarihi" rules={[{ required: true, message: "Lütfen teslim tarihini giriniz!" }]}>
         <DatePicker className="w-full" showTime />
       </Form.Item>
 

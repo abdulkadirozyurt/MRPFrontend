@@ -1,21 +1,28 @@
 "use client";
 
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Modal, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { calculateMRP, updateStock } from "@/utilities/redux/slices/mrpSlice";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "@/utilities/redux/slices/productSlice";
+import { ISupplierOrder } from "@/models/order/ISupplierOrder";
+import SupplierOrderAddForm from "../order-components/supplier-order-components/supplierOrderAddForm";
 
 const { Option } = Select;
 
 export default function MrpForm() {
   const [form] = Form.useForm();
-  const dispatch: AppDispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+  const dispatch: AppDispatch = useDispatch();
   const products = useSelector((state: RootState) => state.product.products);
   const mrpResult = useSelector((state: RootState) => state.mrp.data);
   const mrpStatus = useSelector((state: RootState) => state.mrp.status);
+
+  console.log("result ",mrpResult);
+  
 
   const handleCalculate = async (values: { productId: string; requiredQuantity: number }) => {
     setLoading(true);
@@ -28,9 +35,19 @@ export default function MrpForm() {
     }
   };
 
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    // setEditingOrder(null);
+    // dispatch(fetchSupplierOrders());
+  };
+
   useEffect(() => {
     dispatch(fetchProducts());
-  },[]);
+  }, []);
 
   return (
     <div>
@@ -56,24 +73,13 @@ export default function MrpForm() {
           </Button>
         </Form.Item>
 
-        <Button
-          type="primary"
-          danger
-          className="mt-4"
-          onClick={() =>
-            dispatch(
-              updateStock(
-                Object.values(mrpResult).map((result: any) => ({
-                  materialId: result.materialId,
-                  quantityToAdd: result.shortfall,
-                }))
-              )
-            )
-          }
-          disabled={Object.values(mrpResult).every((result: any) => result.shortfall === 0)}
-        >
+        <Button type="primary" danger onClick={() => showModal()}>
           Eksik Stokları Güncelle
         </Button>
+
+        <Modal open={isModalVisible} okType="primary" onCancel={() => setIsModalVisible(false)} footer={null} className="!w-4/6">
+          <SupplierOrderAddForm onSuccess={handleModalClose} initialValues={mrpResult}/>
+        </Modal>
       </Form>
 
       {Object.keys(mrpResult).length > 0 && (

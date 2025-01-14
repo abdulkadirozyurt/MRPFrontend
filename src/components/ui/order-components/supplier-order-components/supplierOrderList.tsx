@@ -49,7 +49,6 @@ export default function SupplierOrderList() {
   const handleDelete = async (id: string) => {
     try {
       await dispatch(deleteSupplierOrder(id)).unwrap();
-      // message.success("Sipariş başarıyla silindi.");
       dispatch(fetchSupplierOrders());
     } catch (error: any) {
       console.error(error || "Sipariş silinirken hata oluştu.");
@@ -97,11 +96,7 @@ export default function SupplierOrderList() {
           {mode === "add" ? (
             <SupplierOrderAddForm onSuccess={handleModalClose} />
           ) : (
-            <SupplierOrderUpdateForm
-              onSuccess={() => setIsModalVisible(false)}
-              initialValues={editingOrder}
-              onUpdate={handleEdit}
-            />
+            <SupplierOrderUpdateForm onSuccess={() => setIsModalVisible(false)} initialValues={editingOrder} onUpdate={handleEdit} />
           )}
         </Modal>
       </div>
