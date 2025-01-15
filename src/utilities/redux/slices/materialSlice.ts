@@ -80,6 +80,26 @@ export const updateMaterial = createAsyncThunk(
   }
 );
 
+export const fetchMaterialsBySupplier = createAsyncThunk(
+  "material/fetchMaterialsBySupplier",
+  async (supplierId: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/materials/get-supplier`,
+        { supplierId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return response.data.materials;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Malzeme bilgileri alınamadı.");
+    }
+  }
+);
+
 const materialSlice = createSlice({
   name: "material",
   initialState,
@@ -156,6 +176,18 @@ const materialSlice = createSlice({
         state.alertMessage = alertMessages.updateMaterialError;
         state.alertResult = "error";
         state.error = (action.payload as string) || "failed to update material";
+      })
+      
+      .addCase(fetchMaterialsBySupplier.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchMaterialsBySupplier.fulfilled, (state, action: PayloadAction<any[]>) => {
+        state.status = "succeeded";
+        state.materials = action.payload;
+      })
+      .addCase(fetchMaterialsBySupplier.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
       });
 
     // .addMatcher(

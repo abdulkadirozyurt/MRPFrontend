@@ -1,6 +1,6 @@
 "use client";
 
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import SupplierState from "../types/supplierTypes";
 import axios from "axios";
 import ISupplier from "@/models/supplier/ISupplier";
@@ -33,6 +33,27 @@ export const fetchSuppliers = createAsyncThunk("supplier/fetchSuppliers", async 
   return response.data.suppliers;
 });
 
+export const fetchSuppliersByMaterial = createAsyncThunk(
+  "supplier/fetchSuppliersByMaterial",
+  async (materialId: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/suppliers/suppliers-by-material`,
+        { materialId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return response.data.suppliers;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Suppliers fetch failed");
+    }
+  }
+);
+
+
 export const addSupplier = createAsyncThunk("supplier/addSupplier", async (newSupplier: ISupplier, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, newSupplier, {
@@ -64,14 +85,18 @@ export const updateSupplier = createAsyncThunk(
   "supplier/updateSupplier",
   async ({ id, updatedSupplier }: { id: string; updatedSupplier: ISupplier }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, {
-        id,
-        ...updatedSupplier,
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`,
+        {
+          id,
+          ...updatedSupplier,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       return response.data.supplier;
     } catch (error: any) {
       return rejectWithValue(error.response.data.message || "Supplier update failed");
@@ -148,6 +173,17 @@ const supplierSlice = createSlice({
         state.alertMessage = alertMessages.updateSupplierError;
         state.alertResult = "error";
         state.error = action.error.message || "Supplier update failed";
+      })
+      .addCase(fetchSuppliersByMaterial.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchSuppliersByMaterial.fulfilled, (state, action: PayloadAction<any[]>) => {
+        state.status = "succeeded";
+        state.suppliers = action.payload;
+      })
+      .addCase(fetchSuppliersByMaterial.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
       });
 
     // .addMatcher(
