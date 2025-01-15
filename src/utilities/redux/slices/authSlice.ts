@@ -70,7 +70,7 @@ export const authSlice = createSlice({
         state.status = "succeeded";
         state.token = action.payload.token;
         state.userRole = action.payload.role;
-        state.isAuthenticated = true;
+        state.isRegistered = true;
         localStorage.setItem("token", action.payload.token);
       })
       .addCase(register.rejected, (state, action) => {

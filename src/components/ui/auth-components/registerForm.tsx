@@ -14,10 +14,7 @@ export default function RegisterForm() {
   const authError = useSelector((state: RootState) => state.auth.error);
   const isRegistered = useSelector((state: RootState) => state.auth.isRegistered);
 
-  
-
   const onFinish = (values: any) => {
-    
     dispatch(
       register({
         firstname: values.firstname,
@@ -28,19 +25,23 @@ export default function RegisterForm() {
     );
   };
 
+  useEffect(() => {
+    if (authStatus === "succeeded") {
+      setTimeout(() => {
+        dispatch(resetRegistrationState());
+      }, 3000);
+    }
+  }, [authStatus, dispatch]);
+
   return (
     <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-md">
       {isRegistered ? (
         <DoneRegister />
       ) : (
-        <div >
+        <div>
           <h2 className="text-2xl font-bold text-center mb-6">Kayıt Ol</h2>
           <Form name="registerForm" layout="vertical" onFinish={onFinish}>
-            <Form.Item
-              name="firstname"
-              label="Ad"
-              rules={[{ required: true, message: "Lütfen adınızı giriniz!" }]}
-            >
+            <Form.Item name="firstname" label="Ad" rules={[{ required: true, message: "Lütfen adınızı giriniz!" }]}>
               <Input prefix={<UserOutlined />} placeholder="Adınızı giriniz" />
             </Form.Item>
 
@@ -100,12 +101,7 @@ export default function RegisterForm() {
             </Form.Item>
 
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="w-full"
-                disabled={authStatus === "loading"}
-              >
+              <Button type="primary" htmlType="submit" className="w-full" disabled={authStatus === "loading"}>
                 Kayıt Ol
               </Button>
             </Form.Item>
