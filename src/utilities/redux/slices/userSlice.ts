@@ -11,6 +11,7 @@ const initialState: UserState = {
   error: null,
   alertMessage: "",
   alertResult: "info",
+  user: null,
 };
 
 // Fetch Users
@@ -34,18 +35,21 @@ export const addUser = createAsyncThunk("users/add", async (user: Partial<IUser>
 });
 
 // Update User
-export const updateUser = createAsyncThunk("users/update", async ({ id, updatedUser }: { id: string; updatedUser: Partial<IUser> }) => {
-  const response = await axios.put(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
-    { id, ...updatedUser },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
-  );
-  return response.data.user;
-});
+export const updateUser = createAsyncThunk(
+  "users/update",
+  async ({ id, updatedUser }: { id: string; updatedUser: Partial<IUser> }) => {
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
+      { id, ...updatedUser },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    return response.data.user;
+  }
+);
 
 // Delete User
 export const deleteUser = createAsyncThunk("users/delete", async (id: string) => {
@@ -56,6 +60,13 @@ export const deleteUser = createAsyncThunk("users/delete", async (id: string) =>
     },
   });
   return id;
+});
+
+export const fetchCurrentUser = createAsyncThunk("user/fetchCurrentUser", async () => {
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
+  return response.data.user;
 });
 
 const userSlice = createSlice({
@@ -123,8 +134,19 @@ const userSlice = createSlice({
         state.error = action.error.message || null;
         state.alertMessage = "Kullanıcı silinirken bir hata oluştu";
         state.alertResult = "error";
+      })
+      .addCase(fetchCurrentUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action: PayloadAction<IUser>) => {
+        state.status = "succeeded";
+        state.users = [action.payload];
+      })
+      .addCase(fetchCurrentUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
       });
   },
 });
-
+export const selectUser = (state: { user: UserState }) => state.user.user;
 export default userSlice;
