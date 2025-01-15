@@ -53,7 +53,6 @@ export const fetchSuppliersByMaterial = createAsyncThunk(
   }
 );
 
-
 export const addSupplier = createAsyncThunk("supplier/addSupplier", async (newSupplier: ISupplier, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/suppliers`, newSupplier, {
