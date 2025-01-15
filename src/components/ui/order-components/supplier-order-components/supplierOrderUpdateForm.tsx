@@ -1,12 +1,14 @@
-import dayjs from "dayjs";
+"use client";
+
 import { useEffect } from "react";
+import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
-import { ISupplierOrder } from "@/models/order/ISupplierOrder";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
+import { fetchSuppliersByMaterial } from "@/utilities/redux/slices/supplierSlice";
+import { fetchMaterials } from "@/utilities/redux/slices/materialSlice";
+import { ISupplierOrder } from "@/models/order/ISupplierOrder";
+import { Button, DatePicker, Form, InputNumber, Select } from "antd";
 import { toLocalTime, toUTC } from "@/utilities/dates/datetime-util";
-import { fetchProducts } from "@/utilities/redux/slices/productSlice";
-import { fetchCustomers } from "@/utilities/redux/slices/customerSlice";
-import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 
 const { Option } = Select;
 
@@ -20,34 +22,36 @@ export default function SupplierOrderUpdateForm({
   onUpdate: (values: ISupplierOrder) => void;
 }) {
   const [form] = Form.useForm();
-  const dispatch = useDispatch<AppDispatch>();
-  const customers = useSelector((state: RootState) => state.customer.customers);
-  const products = useSelector((state: RootState) => state.product.products);
+  const dispatch: AppDispatch = useDispatch();
+  const suppliers = useSelector((state: RootState) => state.supplier.suppliers);
+  const materials = useSelector((state: RootState) => state.material.materials);
+
+  useEffect(() => {
+    dispatch(fetchMaterials());
+    if (initialValues?.materialId) {
+      dispatch(fetchSuppliersByMaterial(initialValues.materialId._id));
+    }
+  }, [dispatch, initialValues]);
+
+  const handleMaterialChange = async (materialId: string) => {
+    await dispatch(fetchSuppliersByMaterial(materialId));
+    form.setFieldsValue({ supplierId: null });
+  };
 
   const onFinish = async (values: any) => {
     try {
-      const customerOrderData = {
+      const updatedOrder = {
+        ...initialValues,
         ...values,
-        customerId: values.customerId,
-        deliveryDate: toUTC(values.deliveryDate),
-        products: values.products.map((item: any) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-        })),
+        deliveryDate: values.deliveryDate ? toUTC(values.deliveryDate) : null,
       };
-
-      await onUpdate(customerOrderData);
+      await onUpdate(updatedOrder);
       form.resetFields();
       onSuccess();
     } catch (error) {
-      console.error("Müşteri siparişi güncellenirken hata oluştu:", error);
+      console.error("Sipariş güncellenirken hata oluştu:", error);
     }
   };
-
-  useEffect(() => {
-    dispatch(fetchProducts());
-    dispatch(fetchCustomers());
-  }, [dispatch]);
 
   return (
     <Form
@@ -56,104 +60,53 @@ export default function SupplierOrderUpdateForm({
       onFinish={onFinish}
       initialValues={{
         ...initialValues,
+        materialId: initialValues?.materialId?._id,
         supplierId: initialValues?.supplierId?._id,
-        materials: initialValues?.materials?.map((item) => ({
-          materialId: item.materialId?._id,
-          quantity: item.quantity,
-        })),
-        deliveryDate: initialValues?.deliveryDate
-          ? dayjs(initialValues?.deliveryDate)
-          : null,
+        deliveryDate: initialValues?.deliveryDate ? dayjs(initialValues.deliveryDate) : null,
       }}
     >
-      <Form.Item
-        name="customerId"
-        label="Müşteri"
-        rules={[{ required: true, message: "Lütfen bir müşteri seçiniz!" }]}
-      >
-        <Select
-          placeholder="Müşteri Seçiniz"
-          defaultValue={initialValues?.supplierId}
-          options={customers.map((customer) => ({
-            label: customer.companyName,
-            value: customer._id,
-          }))}
-        />
+      {/* Malzeme Seçimi */}
+      <Form.Item name="materialId" label="Malzeme" rules={[{ required: true, message: "Lütfen bir malzeme seçiniz!" }]}>
+        <Select placeholder="Malzeme Seçiniz" onChange={handleMaterialChange}>
+          {materials.map((material) => (
+            <Option key={material._id} value={material._id}>
+              {material.name}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
 
+      {/* Tedarikçi Seçimi */}
       <Form.Item
-        name="deliveryAddress"
-        label="Teslimat Adresi"
-        rules={[{ required: true, message: "Zorunlu alan" }]}
+        name="supplierId"
+        label="Tedarikçi"
+        rules={[{ required: true, message: "Lütfen bir tedarikçi seçiniz!" }]}
       >
-        <Input />
+        <Select placeholder="Tedarikçi Seçiniz">
+          {suppliers.map((supplier) => (
+            <Option key={supplier._id} value={supplier._id}>
+              {supplier.companyName}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
 
+      {/* Miktar */}
+      <Form.Item name="quantity" label="Miktar" rules={[{ required: true, message: "Lütfen miktar giriniz!" }]}>
+        <InputNumber min={1} className="w-full" />
+      </Form.Item>
+
+      {/* Teslim Tarihi */}
       <Form.Item
         name="deliveryDate"
         label="Teslim Tarihi"
         rules={[{ required: true, message: "Lütfen teslim tarihini giriniz!" }]}
       >
-        <DatePicker
-          className="w-full"
-          showTime
-          format={(value) => toLocalTime(value.toDate())}
-          onChange={(date) =>
-            form.setFieldsValue({
-              deliveryDate: date ? date.toISOString() : null,
-            })
-          }
-        />
+        <DatePicker className="w-full" showTime />
       </Form.Item>
 
-      <Form.List name="products">
-        {(fields, { add, remove }) => (
-          <>
-            {fields.map(({ key, name, fieldKey, ...restField }) => (
-              <div key={key} className="flex gap-4 mb-2">
-                <Form.Item
-                  {...restField}
-                  name={[name, "productId"]}
-                  fieldKey={[fieldKey, "productId"] as number[]}
-                  rules={[{ required: true, message: "Ürün seçiniz!" }]}
-                  className="flex-1"
-                >
-                  <Select
-                    mode="multiple"
-                    placeholder="Ürün Seç"
-                    options={products.map((product) => ({
-                      label: product.name,
-                      value: product._id,
-                    }))}
-                  />
-                </Form.Item>
-                <Form.Item
-                  {...restField}
-                  name={[name, "quantity"]}
-                  fieldKey={[fieldKey, "quantity"] as number[]}
-                  rules={[{ required: true, message: "Miktar giriniz!" }]}
-                >
-                  <InputNumber placeholder="Miktar" min={1} />
-                </Form.Item>
-                <Button danger onClick={() => remove(name)}>
-                  Sil
-                </Button>
-              </div>
-            ))}
-            <Form.Item>
-              <Button type="dashed" onClick={() => add()}>
-                + Ürün Ekle
-              </Button>
-            </Form.Item>
-          </>
-        )}
-      </Form.List>
-
-      <Form.Item
-        name="status"
-        label="Durum"
-        rules={[{ required: true, message: "Zorunlu alan" }]}
-      >
+      {/* Durum */}
+      <Form.Item name="status" label="Durum" rules={[{ required: true, message: "Durum seçiniz!" }]}>
         <Select>
           <Option value="pending">Bekliyor</Option>
           <Option value="completed">Tamamlandı</Option>
@@ -161,7 +114,8 @@ export default function SupplierOrderUpdateForm({
         </Select>
       </Form.Item>
 
-      <Button type="primary" htmlType="submit">
+      {/* Gönder Butonu */}
+      <Button type="primary" htmlType="submit" className="mt-4">
         Güncelle
       </Button>
     </Form>

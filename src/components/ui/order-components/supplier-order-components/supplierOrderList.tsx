@@ -2,10 +2,14 @@
 
 import Message from "@/components/common/Message";
 import { ISupplierOrder } from "@/models/order/ISupplierOrder";
-import { deleteSupplierOrder, fetchSupplierOrders, updateSupplierOrder } from "@/utilities/redux/slices/supplierOrderSlice";
+import {
+  deleteSupplierOrder,
+  fetchSupplierOrders,
+  updateSupplierOrder,
+} from "@/utilities/redux/slices/supplierOrderSlice";
 import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Modal, Table, TableColumnsType } from "antd";
+import { Button, Input, Modal, Space, Table, TableColumnsType } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SupplierOrderAddForm from "./supplierOrderAddForm";
@@ -17,31 +21,28 @@ export default function SupplierOrderList() {
   const status = useSelector((state: RootState) => state.supplierOrders.status);
   const alertMessage = useSelector((state: RootState) => state.supplierOrders.alertMessage);
   const alertResult = useSelector((state: RootState) => state.supplierOrders.alertResult);
+
   const [searchText, setSearchText] = useState<string>("");
   const [mode, setMode] = useState<"add" | "update">("add");
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editingOrder, setEditingOrder] = useState<ISupplierOrder | null>(null);
 
+  const filteredOrders = orders?.filter((order) =>
+    order?.supplierId.companyName.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const loading = status === "loading";
+
   const handleSearch = (e: any) => {
     setSearchText(e.target.value);
-  };
-  const showModal = (mode: "add" | "update", supplierOrder?: ISupplierOrder) => {
-    setMode(mode);
-    setEditingOrder(supplierOrder || null);
-    setIsModalVisible(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalVisible(false);
-    setEditingOrder(null);
-    dispatch(fetchSupplierOrders());
   };
 
   const handleEdit = async (updatedOrder: ISupplierOrder) => {
     try {
-      await dispatch(updateSupplierOrder({ id: editingOrder?._id ?? "", updatedOrder })).unwrap();
+      await dispatch(updateSupplierOrder({ id: updatedOrder._id, updatedOrder })).unwrap();
       handleModalClose();
     } catch (error) {
+      console.log("aaa");
       console.log(error);
     }
   };
@@ -54,26 +55,86 @@ export default function SupplierOrderList() {
       console.error(error || "Sipariş silinirken hata oluştu.");
     }
   };
+
+  const showModal = (mode: "add" | "update", supplierOrder?: ISupplierOrder) => {
+    setMode(mode);
+    setEditingOrder(supplierOrder || null);
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setEditingOrder(null);
+    dispatch(fetchSupplierOrders());
+  };
+
   const columns: TableColumnsType<ISupplierOrder> = [
     {
+      title: "Tedarikçi",
+      dataIndex: ["supplierId", "companyName"],
+      key: "supplierId",
+    },
+    {
       title: "Depo",
-      dataIndex: "warehouseId",
+      dataIndex: ["warehouseId", "name"],
       key: "warehouseId",
     },
     {
-      title: "Tedarikçi",
-      dataIndex: "supplierId",
-      key: "supplierId",
+      title: "Malzeme",
+      dataIndex: ["materialId", "name"],
+      key: "materialId",
+    },
+    {
+      title: "Miktar",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "Sipariş Tarihi",
+      dataIndex: "orderDate",
+      key: "orderDate",
+      render: (text: string) =>
+        new Date(text).toLocaleString(undefined, {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
     },
     {
       title: "Teslim Tarihi",
       dataIndex: "deliveryDate",
       key: "deliveryDate",
+      render: (text: string) =>
+        new Date(text).toLocaleString(undefined, {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
     },
     {
       title: "Durum",
       dataIndex: "status",
       key: "status",
+    },
+    {
+      title: "İşlemler",
+      key: "actions",
+      align: "center",
+
+      render: (_: any, record: ISupplierOrder) => (
+        <Space size="middle">
+          <Button type="primary" onClick={() => showModal("update", record)}>
+            Düzenle
+          </Button>
+          <Button type="primary" danger onClick={() => handleDelete(record._id)}>
+            Sil
+          </Button>
+        </Space>
+      ),
     },
   ];
 
@@ -84,23 +145,46 @@ export default function SupplierOrderList() {
   return (
     <>
       {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
-      {/* <h2>Tedarikçi Sipariş Listesi</h2> */}
+
+      <h2>Tedarikçi Sipariş Listesi</h2>
 
       <div className="flex items-center justify-between h-14">
-        <Input className="!w-72" value={searchText} onChange={handleSearch} prefix={<SearchOutlined />} placeholder="Ara" />
+        <Input
+          className="!w-72"
+          value={searchText}
+          onChange={handleSearch}
+          prefix={<SearchOutlined />}
+          placeholder="Ara"
+        />
         <Button type="primary" onClick={() => showModal("add")}>
           Yeni Sipariş Ekle
         </Button>
 
-        <Modal open={isModalVisible} okType="primary" onCancel={() => setIsModalVisible(false)} footer={null} className="!w-4/6">
+        <Modal
+          open={isModalVisible}
+          okType="primary"
+          onCancel={() => setIsModalVisible(false)}
+          footer={null}
+          className="!w-4/6"
+        >
           {mode === "add" ? (
             <SupplierOrderAddForm onSuccess={handleModalClose} />
           ) : (
-            <SupplierOrderUpdateForm onSuccess={() => setIsModalVisible(false)} initialValues={editingOrder} onUpdate={handleEdit} />
+            <SupplierOrderUpdateForm
+              onSuccess={handleModalClose}
+              initialValues={editingOrder || null}
+              onUpdate={handleEdit}
+            />
           )}
         </Modal>
       </div>
-      <Table dataSource={orders} columns={columns} loading={status === "loading"} rowKey="_id" />
+      <Table
+        rowKey="_id"
+        loading={loading}
+        columns={columns}
+        dataSource={filteredOrders}
+        pagination={{ pageSize: 10 }}
+      />
     </>
   );
 }

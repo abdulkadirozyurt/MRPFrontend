@@ -62,11 +62,15 @@ export const updateProduct = createAsyncThunk(
   "product/updateProduct",
   async ({ id, updatedProduct }: { id: string; updatedProduct: IProduct }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, { id, ...updatedProduct }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/products`,
+        { id, ...updatedProduct },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       return response.data.product;
     } catch (error: any) {
       return rejectWithValue(error.response.data.message || "Ürün güncelleme başarısız oldu.");
@@ -97,10 +101,11 @@ const productSlice = createSlice({
         state.alertMessage = alertMessages.fetchProductsSuccess;
         state.alertResult = "info";
       })
-      .addCase(fetchProducts.rejected, (state) => {
+      .addCase(fetchProducts.rejected, (state, action) => {
         state.status = "failed";
         state.alertMessage = alertMessages.fetchProductsError;
         state.alertResult = "error";
+        state.error = (action.payload as string) || "Ürünler listelenirken hata oluştu!";
       })
 
       .addCase(addProduct.pending, (state) => {
@@ -122,7 +127,9 @@ const productSlice = createSlice({
 
       .addCase(updateProduct.fulfilled, (state, action: PayloadAction<IProduct>) => {
         state.status = "succeeded";
-        state.products = state.products.map((product) => (product._id === action.payload._id ? action.payload : product));
+        state.products = state.products.map((product) =>
+          product._id === action.payload._id ? action.payload : product
+        );
       })
 
       .addCase(updateProduct.rejected, (state, action) => {
