@@ -38,7 +38,7 @@ export default function ProductList() {
       await dispatch(updateProduct({ id: updatedProduct._id, updatedProduct })).unwrap();
       handleModalClose();
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -47,7 +47,7 @@ export default function ProductList() {
       await dispatch(deleteProduct(id)).unwrap();
       dispatch(fetchProducts());
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

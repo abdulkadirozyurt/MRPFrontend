@@ -79,7 +79,7 @@ export default function WarehouseList() {
       await dispatch(updateWarehouse({ id: updatedWarehouse._id, updatedWarehouse })).unwrap();
       handleModalClose();
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -88,7 +88,7 @@ export default function WarehouseList() {
       await dispatch(deleteWarehouse(id)).unwrap();
       dispatch(fetchWarehouses());
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

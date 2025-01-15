@@ -51,7 +51,7 @@ export default function CustomerOrdersList() {
       await dispatch(updateCustomerOrder({ id: editingOrder?._id ?? "", updatedOrder })).unwrap();
       handleModalClose();
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

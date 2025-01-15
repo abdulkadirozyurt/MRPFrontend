@@ -42,8 +42,8 @@ export default function SupplierOrderList() {
       await dispatch(updateSupplierOrder({ id: updatedOrder._id, updatedOrder })).unwrap();
       handleModalClose();
     } catch (error) {
-      console.log("aaa");
-      console.log(error);
+      
+      
     }
   };
 

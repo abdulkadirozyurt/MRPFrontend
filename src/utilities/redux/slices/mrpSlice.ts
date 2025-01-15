@@ -47,11 +47,6 @@ export const calculateMRP = createAsyncThunk(
 export const createSupplierOrdersFromMRP = createAsyncThunk(
   "mrp/createSupplierOrdersFromMRP",
   async ({ warehouseId, mrpResult }: { warehouseId: string; mrpResult: any }, { rejectWithValue }) => {
-
-    console.log("mrpResult", mrpResult);
-    console.log("warehouseId", warehouseId);
-    
-    
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/mrp/create-supplier-order`,

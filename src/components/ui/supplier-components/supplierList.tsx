@@ -56,7 +56,7 @@ export default function SupplierList() {
       await dispatch(updateSupplier({ id: updatedSupplier._id, updatedSupplier })).unwrap();
       handleModalClose();
     } catch (error: any) {
-      console.log(error);
+      
     }
   };
 

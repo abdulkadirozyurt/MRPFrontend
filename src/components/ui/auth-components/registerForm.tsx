@@ -17,7 +17,7 @@ export default function RegisterForm() {
   
 
   const onFinish = (values: any) => {
-    console.log("Alınan değerler:", values);
+    
     dispatch(
       register({
         firstname: values.firstname,

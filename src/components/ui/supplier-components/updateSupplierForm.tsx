@@ -30,7 +30,7 @@ export default function UpdateSupplierForm({
   };
 
   useEffect(() => {
-    console.log("initialValues---> ", initialValues);
+    
     
     form.resetFields();
   }, [initialValues]);

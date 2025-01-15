@@ -144,7 +144,6 @@ const supplierOrderSlice = createSlice({
       })
       .addCase(updateSupplierOrder.fulfilled, (state, action: PayloadAction<ISupplierOrder>) => {
         state.status = "succeeded";
-        console.log("state.status", state.status);
         
         state.alertMessage = alertMessages.updateSupplierOrderSuccess;
         state.alertResult = "success";

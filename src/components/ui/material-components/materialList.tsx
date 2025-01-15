@@ -54,11 +54,11 @@ export default function MaterialList() {
 
   const handleEdit = async (updatedMaterial: IMaterial) => {
     try {
-      console.log("Güncellenen Malzeme:", updatedMaterial);
+      
       await dispatch(updateMaterial({ id: updatedMaterial._id, updatedMaterial })).unwrap();
       handleModalClose();
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

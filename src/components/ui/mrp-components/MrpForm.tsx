@@ -237,7 +237,7 @@ export default function MrpForm() {
 //   const mrpResult = useSelector((state: RootState) => state.mrp.data);
 //   const mrpStatus = useSelector((state: RootState) => state.mrp.status);
 
-//   console.log("result ",mrpResult);
+//   
 
 //   const handleCalculate = async (values: { productId: string; requiredQuantity: number }) => {
 //     setLoading(true);

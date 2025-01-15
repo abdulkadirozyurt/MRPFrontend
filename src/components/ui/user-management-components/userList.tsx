@@ -36,7 +36,7 @@ export default function UserList() {
       await dispatch(updateUser({ id: updatedUser._id, updatedUser })).unwrap();
       handleModalClose();
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -45,7 +45,7 @@ export default function UserList() {
       await dispatch(deleteUser(id)).unwrap();
       dispatch(fetchUsers());
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

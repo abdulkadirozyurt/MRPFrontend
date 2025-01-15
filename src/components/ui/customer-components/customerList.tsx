@@ -47,7 +47,7 @@ export default function CustomerList() {
       await dispatch(updateCustomer({ id: updatedCustomer._id, updatedCustomer })).unwrap();
       handleModalClose();
     } catch (error) {
-      console.log(error);
+      
     }
   };
 
@@ -56,7 +56,7 @@ export default function CustomerList() {
       await dispatch(deleteCustomer(id)).unwrap();
       dispatch(fetchCustomers());
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

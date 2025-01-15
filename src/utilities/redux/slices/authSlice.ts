@@ -84,10 +84,10 @@ export const authSlice = createSlice({
         state.status = "succeeded";
         state.token = action.payload.token;
         const decodedToken: any = jwtDecode(action.payload.token);
-        console.log("decodedToken:", decodedToken);
+        
 
         state.userRole = decodedToken?.role;
-        console.log("state.userRole:", state.userRole);
+        
 
         state.isAuthenticated = true;
         localStorage.setItem("token", action.payload.token);
