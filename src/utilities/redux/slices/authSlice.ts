@@ -3,7 +3,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import AuthState from "../types/authTypes";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface DecodedToken {
   role: string;
@@ -26,19 +26,25 @@ const initialState: AuthState = {
   alertResult: "",
 };
 
-export const register = createAsyncThunk("auth/register", async (user: { firstname: string; lastname: string; email: string; password: string }) => {
-  const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, user);
-  return { token: response.data.token, role: response.data.role };
-});
-
-export const login = createAsyncThunk("auth/login", async (credentials: { email: string; password: string }, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, credentials);
-    return { token: response.data.token };
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Login failed");
+export const register = createAsyncThunk(
+  "auth/register",
+  async (user: { firstname: string; lastname: string; email: string; password: string }) => {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, user);
+    return { token: response.data.token, role: response.data.role };
   }
-});
+);
+
+export const login = createAsyncThunk(
+  "auth/login",
+  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, credentials);
+      return { token: response.data.token };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  }
+);
 
 export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
   try {
@@ -59,6 +65,9 @@ export const authSlice = createSlice({
   reducers: {
     resetRegistrationState(state) {
       state.isRegistered = false;
+    },
+    updateUserRole: (state, action: PayloadAction<string>) => {
+      state.userRole = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -84,10 +93,8 @@ export const authSlice = createSlice({
         state.status = "succeeded";
         state.token = action.payload.token;
         const decodedToken: any = jwtDecode(action.payload.token);
-        
 
         state.userRole = decodedToken?.role;
-        
 
         state.isAuthenticated = true;
         localStorage.setItem("token", action.payload.token);
@@ -113,5 +120,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { resetRegistrationState } = authSlice.actions;
+export const { resetRegistrationState, updateUserRole } = authSlice.actions;
 export default authSlice;
