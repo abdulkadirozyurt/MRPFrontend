@@ -20,9 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
-console.log("WebSocket URL:", process.env.NEXT_PUBLIC_API_URL);
-
-const socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000", {
+const socket = io(process.env.NEXT_PUBLIC_API_URL, {
   transports: ["websocket", "polling"],
 });
 

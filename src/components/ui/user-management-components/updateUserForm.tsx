@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 
 const { Option } = Select;
 
-const socket = io(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`,{
+const socket = io(process.env.NEXT_PUBLIC_API_URL, {
   transports: ["websocket", "polling"],
 });
 
@@ -35,16 +35,15 @@ export default function UpdateUserForm({
   const onFinish = async (values: any) => {
     const updatedUser = { ...initialValues, ...values };
     await onUpdate(updatedUser);
-  
+
     if (initialValues?.role !== values.role) {
       console.log("Emitting role update:", updatedUser._id, values.role);
       socket.emit("updateRole", { userId: updatedUser._id, newRole: values.role });
     }
-  
+
     form.resetFields();
     onSuccess();
   };
-  
 
   //   const onFinish = async (values: any) => {
   //     setLoading(true);
