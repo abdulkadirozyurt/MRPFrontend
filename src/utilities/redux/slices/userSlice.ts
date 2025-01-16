@@ -157,7 +157,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action: PayloadAction<IUser>) => {
         state.status = "succeeded";
-        state.users = [action.payload];
+        state.user = action.payload;
       })
       .addCase(fetchCurrentUser.rejected, (state, action) => {
         state.status = "failed";

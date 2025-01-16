@@ -7,8 +7,11 @@ import { updateUser } from "@/utilities/redux/slices/userSlice";
 import { useEffect, useState } from "react";
 import { UserRoles } from "@/utilities/constants/UserRoles";
 import IUser from "@/models/user/IUser";
+import { io } from "socket.io-client";
 
 const { Option } = Select;
+
+const socket = io(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`);
 
 export default function UpdateUserForm({
   initialValues,
@@ -30,9 +33,16 @@ export default function UpdateUserForm({
   const onFinish = async (values: any) => {
     const updatedUser = { ...initialValues, ...values };
     await onUpdate(updatedUser);
+  
+    if (initialValues?.role !== values.role) {
+      console.log("Emitting role update:", updatedUser._id, values.role);
+      socket.emit("updateRole", { userId: updatedUser._id, newRole: values.role });
+    }
+  
     form.resetFields();
     onSuccess();
   };
+  
 
   //   const onFinish = async (values: any) => {
   //     setLoading(true);
@@ -53,11 +63,19 @@ export default function UpdateUserForm({
         <Input placeholder="Ad" />
       </Form.Item>
 
-      <Form.Item name="lastname" label="Soyad" rules={[{ required: true, message: "Lütfen kullanıcı soyadını giriniz!" }]}>
+      <Form.Item
+        name="lastname"
+        label="Soyad"
+        rules={[{ required: true, message: "Lütfen kullanıcı soyadını giriniz!" }]}
+      >
         <Input placeholder="Soyad" />
       </Form.Item>
 
-      <Form.Item name="email" label="E-posta" rules={[{ required: true, type: "email", message: "Lütfen geçerli bir e-posta adresi giriniz!" }]}>
+      <Form.Item
+        name="email"
+        label="E-posta"
+        rules={[{ required: true, type: "email", message: "Lütfen geçerli bir e-posta adresi giriniz!" }]}
+      >
         <Input placeholder="E-posta" />
       </Form.Item>
 
