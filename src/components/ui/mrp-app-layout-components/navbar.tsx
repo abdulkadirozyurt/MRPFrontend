@@ -1,3 +1,5 @@
+"use client";
+
 import { UserRoles } from "@/utilities/constants/UserRoles";
 import { logout } from "@/utilities/redux/slices/authSlice";
 import { fetchCurrentUser, updateUserRole } from "@/utilities/redux/slices/userSlice";
@@ -58,6 +60,10 @@ export default function Navbar() {
   }, [dispatch, user]);
 
   useEffect(() => {
+    socket.on("connect_error", (error) => {
+      console.error("WebSocket connect error:", error.message);
+    });
+
     socket.on("connect", () => {
       console.log("WebSocket connected:", socket.id);
     });
