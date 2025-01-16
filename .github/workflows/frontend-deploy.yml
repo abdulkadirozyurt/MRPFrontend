@@ -28,7 +28,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          echo "NEXT_PUBLIC_API_URL=http://${{ secrets.VDS_IP }}" > .env
+          echo "NEXT_PUBLIC_API_URL=http://${{ secrets.VDS_IP }}:5000" > .env
           docker build --no-cache --platform=linux/amd64 -t my-frontend-image .
           docker tag my-frontend-image ${{ secrets.DOCKER_USERNAME }}/my-frontend-image:latest
 
