@@ -4,6 +4,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import IUser from "@/models/user/IUser";
 import UserState from "../types/userTypes";
+import { jwtDecode } from "jwt-decode";
 
 const initialState: UserState = {
   users: [],
@@ -12,6 +13,18 @@ const initialState: UserState = {
   alertMessage: "",
   alertResult: "info",
   user: null,
+  userRole: (() => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken = jwtDecode<{ role: string }>(token);
+        return decodedToken.role;
+      }
+    } catch {
+      return "user";
+    }
+    return "user"; // Varsayılan rol
+  })(),
 };
 
 // Fetch Users
@@ -72,7 +85,11 @@ export const fetchCurrentUser = createAsyncThunk("user/fetchCurrentUser", async 
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    updateUserRole: (state, action: PayloadAction<string>) => {
+      state.userRole = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -148,5 +165,6 @@ const userSlice = createSlice({
       });
   },
 });
+export const {updateUserRole} = userSlice.actions;
 export const selectUser = (state: { user: UserState }) => state.user.user;
 export default userSlice;

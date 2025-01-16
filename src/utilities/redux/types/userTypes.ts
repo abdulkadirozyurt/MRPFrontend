@@ -4,4 +4,5 @@ import CommonState from "../commonState";
 export default interface UserState extends CommonState {
   users: IUser[];
   user: null | IUser;
+  userRole: string
 }

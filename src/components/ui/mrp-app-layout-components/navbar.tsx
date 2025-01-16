@@ -1,38 +1,64 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/utilities/redux/store";
 import { UserRoles } from "@/utilities/constants/UserRoles";
-import { updateUserRole } from "@/utilities/redux/slices/authSlice";
-import { io } from "socket.io-client";
+import { logout } from "@/utilities/redux/slices/authSlice";
+import { updateUserRole } from "@/utilities/redux/slices/userSlice";
+import { AppDispatch, RootState } from "@/utilities/redux/store";
+import {
+  CalculatorOutlined,
+  DashboardOutlined,
+  DropboxOutlined,
+  FileTextOutlined,
+  SettingOutlined,
+  ShoppingCartOutlined,
+  UsergroupAddOutlined,
+} from "@ant-design/icons";
 import { Menu, MenuProps } from "antd";
-import { DashboardOutlined, UsergroupAddOutlined, DropboxOutlined, FileTextOutlined, ShoppingCartOutlined, CalculatorOutlined, SettingOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
 
 const socket = io(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}`);
 
 export default function Navbar() {
   const dispatch: AppDispatch = useDispatch();
-  const userRole = useSelector((state: RootState) => state.auth.userRole);
+  const userRole = useSelector((state: RootState) => state.auth.userRole,shallowEqual);
   const [current, setCurrent] = useState("");
   const router = useRouter();
+  const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     socket.on("connect", () => {
       console.log("WebSocket connected:", socket.id);
-    });
-
-    // Dinleme: 'roleUpdated' olayını
-    socket.on("roleUpdated", ({ userId, newRole }) => {
-      if (userId === localStorage.getItem("userId")) {
-        dispatch(updateUserRole(newRole)); // Redux'a yeni rolü gönder
+  
+      if (user && user._id) {
+        socket.emit("setUserId", user._id);
       }
     });
-
+  
+    socket.on("roleUpdated", ({ userId, newRole }) => {
+      if (userId === user?._id) {
+        dispatch(updateUserRole(newRole));
+        console.log("User role updated in Redux:", newRole);
+      }
+    });
+  
     return () => {
       socket.disconnect();
     };
-  }, [dispatch]);
+  }, [dispatch, user]);
+  
+
+  const handleRoleChange = (userId: string, newRole: string) => {
+    socket.emit("updateRole", { userId, newRole });
+  };
+
+  const handleLogout = () => {
+    // Çıkış işlemi
+    localStorage.removeItem("token");
+    dispatch(logout());
+    router.push("/login");
+  };
 
   const items = [
     {
@@ -121,16 +147,25 @@ export default function Navbar() {
           : []),
         {
           key: "logout",
-          label: <span onClick={() => router.push("/login")}>Çıkış Yap</span>,
+          // label: <span onClick={() => router.push("/login")}>Çıkış Yap</span>,
+          label: <span onClick={handleLogout}>Çıkış Yap</span>,
         },
       ],
     },
   ];
 
+  // const onClick: MenuProps["onClick"] = (e) => {
+  //   if (e.key === "logout") {
+  //     localStorage.removeItem("userId"); // Remove userId from local storage
+  //     router.push("/login"); // Redirect to login page
+  //   } else {
+  //     setCurrent(e.key);
+  //   }
+  // };
+
   const onClick: MenuProps["onClick"] = (e) => {
     if (e.key === "logout") {
-      localStorage.removeItem("userId"); // Remove userId from local storage
-      router.push("/login"); // Redirect to login page
+      handleLogout();
     } else {
       setCurrent(e.key);
     }
@@ -138,10 +173,6 @@ export default function Navbar() {
 
   return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
 }
-
-
-
-
 
 // "use client";
 
@@ -182,7 +213,7 @@ export default function Navbar() {
 //     socket.on("connect", () => {
 //       console.log("WebSocket connected:", socket.id);
 //     });
-  
+
 //     // Rol güncelleme olayı alındığında
 //     socket.on("roleUpdated", ({ userId, newRole }) => {
 //       // Eğer güncellenen kullanıcı, mevcut kullanıcıysa Redux'u güncelle
@@ -190,13 +221,12 @@ export default function Navbar() {
 //         dispatch(updateUserRole(newRole));
 //       }
 //     });
-  
+
 //     // Cleanup: component unmount olduğunda WebSocket bağlantısını kapatıyoruz
 //     return () => {
 //       socket.disconnect();
 //     };
 //   }, [dispatch]);
-  
 
 //   const handleRoleChange = (userId: string, newRole: string) => {
 //     socket.emit("updateRole", { userId, newRole });

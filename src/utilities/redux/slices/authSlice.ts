@@ -66,9 +66,7 @@ export const authSlice = createSlice({
     resetRegistrationState(state) {
       state.isRegistered = false;
     },
-    updateUserRole: (state, action: PayloadAction<string>) => {
-      state.userRole = action.payload;
-    },
+    
   },
   extraReducers: (builder) => {
     builder
@@ -120,5 +118,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { resetRegistrationState, updateUserRole } = authSlice.actions;
+export const { resetRegistrationState } = authSlice.actions;
 export default authSlice;
