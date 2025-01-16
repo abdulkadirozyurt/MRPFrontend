@@ -1,7 +1,3 @@
-
-
-
-
 import { UserRoles } from "@/utilities/constants/UserRoles";
 import { logout } from "@/utilities/redux/slices/authSlice";
 import { fetchCurrentUser, updateUserRole } from "@/utilities/redux/slices/userSlice";
@@ -21,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
+
+console.log("WebSocket URL:", process.env.NEXT_PUBLIC_API_URL);
 
 const socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000", {
   transports: ["websocket", "polling"],
@@ -183,6 +181,3 @@ export default function Navbar() {
 
   return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
 }
-
-
-
