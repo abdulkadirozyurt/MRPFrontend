@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 
 const { Option } = Select;
 
-const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
+const socket = io(`${process.env.NEXT_PUBLIC_API_URL}:5000`, {
   transports: ["websocket", "polling"],
 });
 
