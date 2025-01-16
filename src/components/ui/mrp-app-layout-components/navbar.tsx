@@ -64,6 +64,10 @@ export default function Navbar() {
       console.error("WebSocket connect error:", error.message);
     });
 
+    socket.on("disconnect", (reason) => {
+      console.warn("WebSocket disconnected:", reason);
+    });
+
     socket.on("connect", () => {
       console.log("WebSocket connected:", socket.id);
     });
