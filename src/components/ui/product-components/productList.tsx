@@ -20,14 +20,12 @@ export default function ProductList() {
 
   const [searchText, setSearchText] = useState<string>("");
   const [mode, setMode] = useState<"add" | "update">("add");
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editingProduct, setEditingProduct] = useState<IProduct | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const loading = status === "loading";
 
-  const filteredProducts = products?.filter((product) =>
-    product?.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredProducts = products?.filter((product) => product?.name.toLowerCase().includes(searchText.toLowerCase()));
 
   const handleSearch = (e: any) => {
     setSearchText(e.target.value);
@@ -37,18 +35,14 @@ export default function ProductList() {
     try {
       await dispatch(updateProduct({ id: updatedProduct._id, updatedProduct })).unwrap();
       handleModalClose();
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
 
   const handleDelete = async (id: string) => {
     try {
       await dispatch(deleteProduct(id)).unwrap();
       dispatch(fetchProducts());
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
 
   const showModal = (mode: "add" | "update", product?: IProduct) => {
@@ -135,42 +129,20 @@ export default function ProductList() {
       {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
 
       <div className="flex items-center justify-between h-14">
-        <Input
-          className=" !w-72"
-          value={searchText}
-          onChange={handleSearch}
-          prefix={<SearchOutlined />}
-          placeholder="Ara"
-        />
+        <Input className=" !w-72" value={searchText} onChange={handleSearch} prefix={<SearchOutlined />} placeholder="Ara" />
 
         <Button type="primary" onClick={() => showModal("add")} className="!m-5">
           Yeni Ürün Ekle
         </Button>
-        <Modal
-          open={isModalVisible}
-          okType="primary"
-          onCancel={() => setIsModalVisible(false)}
-          footer={null}
-          className="!w-4/6"
-        >
+        <Modal open={isModalVisible} okType="primary" onCancel={() => setIsModalVisible(false)} footer={null} className="!w-4/6">
           {mode === "add" ? (
             <AddProductForm onSuccess={handleModalClose} />
           ) : (
-            <UpdateProductForm
-              onSuccess={handleModalClose}
-              onUpdate={handleEdit}
-              initialValues={editingProduct || null}
-            />
+            <UpdateProductForm onSuccess={handleModalClose} onUpdate={handleEdit} initialValues={editingProduct || null} />
           )}
         </Modal>
       </div>
-      <Table
-        rowKey="_id"
-        loading={loading}
-        columns={columns}
-        dataSource={filteredProducts}
-        pagination={{ pageSize: 10 }}
-      />
+      <Table rowKey="_id" loading={loading} columns={columns} dataSource={filteredProducts} pagination={{ pageSize: 10 }} />
     </>
   );
 }

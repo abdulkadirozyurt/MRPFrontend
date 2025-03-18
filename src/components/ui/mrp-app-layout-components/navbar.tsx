@@ -57,24 +57,6 @@ export default function Navbar() {
     };
   }, [dispatch, user]);
 
-  useEffect(() => {
-    socket.on("connect_error", (error) => {
-      console.error("WebSocket connect error:", error.message);
-    });
-
-    socket.on("disconnect", (reason) => {
-      console.warn("WebSocket disconnected:", reason);
-    });
-
-    socket.on("connect", () => {
-      console.log("WebSocket connected:", socket.id);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     dispatch(logout());

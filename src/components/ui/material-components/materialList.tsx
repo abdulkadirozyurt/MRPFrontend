@@ -136,7 +136,7 @@ export default function MaterialList() {
       {alertMessage && alertResult && <Message result={alertResult} alertMessage={alertMessage} />}
 
       <div className="flex items-center justify-between h-14">
-        <Input className=" !w-72" value={searchText} onChange={handleSearch} prefix={<SearchOutlined />} placeholder="Ara" />
+        <Input className="!w-72" value={searchText} onChange={handleSearch} prefix={<SearchOutlined />} placeholder="Ara" />
 
         <Button type="primary" onClick={() => showModal("add")} className="!m-5">
           Yeni Malzeme Ekle

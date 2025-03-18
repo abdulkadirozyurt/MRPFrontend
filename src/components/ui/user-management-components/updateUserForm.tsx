@@ -37,26 +37,12 @@ export default function UpdateUserForm({
     await onUpdate(updatedUser);
 
     if (initialValues?.role !== values.role) {
-      console.log("Emitting role update:", updatedUser._id, values.role);
       socket.emit("updateRole", { userId: updatedUser._id, newRole: values.role });
     }
 
     form.resetFields();
     onSuccess();
   };
-
-  //   const onFinish = async (values: any) => {
-  //     setLoading(true);
-  //     try {
-  //       await dispatch(updateUser({ id: initialValues?._id, updatedUser: values })).unwrap();
-  //       if(onUpdate) onUpdate(values);
-  //       onSuccess();
-  //     } catch (error) {
-  //       console.error("Kullanıcı güncellenirken hata oluştu:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>

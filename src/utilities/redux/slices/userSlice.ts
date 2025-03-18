@@ -23,11 +23,10 @@ const initialState: UserState = {
     } catch {
       return "user";
     }
-    return "user"; // Varsayılan rol
+    return "user";
   })(),
 };
 
-// Fetch Users
 export const fetchUsers = createAsyncThunk("users/fetchAll", async () => {
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
     headers: {
@@ -37,7 +36,6 @@ export const fetchUsers = createAsyncThunk("users/fetchAll", async () => {
   return response.data.users;
 });
 
-// Add User
 export const addUser = createAsyncThunk("users/add", async (user: Partial<IUser>) => {
   const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, user, {
     headers: {
@@ -47,7 +45,6 @@ export const addUser = createAsyncThunk("users/add", async (user: Partial<IUser>
   return response.data.user;
 });
 
-// Update User
 export const updateUser = createAsyncThunk(
   "users/update",
   async ({ id, updatedUser }: { id: string; updatedUser: Partial<IUser> }) => {
@@ -64,7 +61,6 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-// Delete User
 export const deleteUser = createAsyncThunk("users/delete", async (id: string) => {
   await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
     data: { id },
@@ -165,6 +161,6 @@ const userSlice = createSlice({
       });
   },
 });
-export const {updateUserRole} = userSlice.actions;
+export const { updateUserRole } = userSlice.actions;
 export const selectUser = (state: { user: UserState }) => state.user.user;
 export default userSlice;
